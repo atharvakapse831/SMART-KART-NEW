@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Smart KART</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>My Profile</h2>
+            <p>Manage your account details</p>
+        </div>
+    </div>
+
+    <section class="container" style="margin-bottom: 4rem;">
+        <div class="card"
+            style="padding: 2rem; max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+            <div style="text-align: center;">
+                <img src="https://via.placeholder.com/150" alt="Profile"
+                    style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--primary-light);">
+                <button class="btn btn-outline btn-sm" style="margin-top: 1rem;">Change Photo</button>
+            </div>
+            <div>
+                <h3>Personal Information</h3>
+                <!-- Simple placeholder content as backend is mocked -->
+                <div style="margin-top: 1.5rem;">
+                    <p><strong>Name:</strong> <span id="profile-name">Loading...</span></p>
+                    <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
+                    <p><strong>Address:</strong> <span id="profile-address">Loading...</span></p>
+                </div>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-primary">Edit Profile</button>
+                    <a href="orders.html" class="btn btn-outline">My Orders</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (currentUser) {
+                document.getElementById('profile-name').textContent = currentUser.name;
+                document.getElementById('profile-email').textContent = currentUser.email;
+                document.getElementById('profile-address').textContent = currentUser.address;
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

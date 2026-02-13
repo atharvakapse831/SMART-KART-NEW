@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart KART</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Welcome Back</h2>
+            <p>Login to access your account</p>
+        </div>
+    </div>
+
+    <section class="container" style="margin-bottom: 4rem;">
+        <div class="card" style="max-width: 400px; margin: 0 auto; padding: 2.5rem;">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Login</h2>
+            <form id="login-form" onsubmit="return validateLoginForm()">
+                <div class="mb-4">
+                    <label for="login-email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email
+                        Address</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-4">
+                    <label for="login-password"
+                        style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted);">
+                Don't have an account? <a href="signup.html" style="color: var(--primary-color); font-weight: 600;">Sign
+                    up</a>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

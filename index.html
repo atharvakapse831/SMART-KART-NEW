@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Store - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Fresh Groceries Delivered to Your Doorstep</h1>
+            <p>Experience the finest quality organic produce and essentials. Freshness guaranteed, everyday.</p>
+            <a href="products.html" class="btn btn-primary">Shop Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <section class="container" style="margin-top: 3rem; margin-bottom: 2rem;">
+        <div class="section-header">
+            <h2>Shop by Category</h2>
+            <p>Find exactly what you need</p>
+        </div>
+        <div id="category-grid" class="category-grid">
+            <!-- Categories loaded by JS -->
+        </div>
+    </section>
+
+    <section class="products container">
+        <div class="section-header">
+            <h2>Featured Products</h2>
+            <p>Hand-picked weekly favorites just for you</p>
+        </div>
+        <div id="featured-products" class="product-grid">
+            <!-- Featured products loaded by JS -->
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="products.html" class="btn btn-outline">View All Products</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

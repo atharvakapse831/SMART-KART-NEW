@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Smart KART</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <p>We'd love to hear from you</p>
+        </div>
+    </div>
+
+    <section class="container" style="margin-bottom: 4rem;">
+        <div
+            style="display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; background: white; padding: 3rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+            <div class="contact-info">
+                <h3 style="margin-bottom: 1.5rem;">Contact Information</h3>
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <p style="display: flex; align-items: center; gap: 1rem;"><i class="fas fa-map-marker-alt"
+                            style="color: var(--primary-color); font-size: 1.2rem;"></i> 123 Grocery Street, Food City,
+                        FC 12345</p>
+                    <p style="display: flex; align-items: center; gap: 1rem;"><i class="fas fa-phone"
+                            style="color: var(--primary-color); font-size: 1.2rem;"></i> (555) 123-4567</p>
+                    <p style="display: flex; align-items: center; gap: 1rem;"><i class="fas fa-envelope"
+                            style="color: var(--primary-color); font-size: 1.2rem;"></i> support@smartkart.com</p>
+                    <p style="display: flex; align-items: center; gap: 1rem;"><i class="fas fa-clock"
+                            style="color: var(--primary-color); font-size: 1.2rem;"></i> Mon-Sat: 8AM - 8PM, Sun: 9AM -
+                        6PM</p>
+                </div>
+            </div>
+            <div class="contact-form-wrapper">
+                <h3 style="margin-bottom: 1.5rem;">Send us a Message</h3>
+                <form id="contact-form" onsubmit="sendMessage(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label for="name"
+                                style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Name</label>
+                            <input type="text" id="name" name="name" required placeholder="Your Name">
+                        </div>
+                        <div>
+                            <label for="email"
+                                style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                            <input type="email" id="email" name="email" required placeholder="Your Email">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label for="subject"
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Subject</label>
+                        <input type="text" id="subject" name="subject" required placeholder="Subject">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="message"
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Message</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="How can we help?"
+                            style="width: 100%; border: 1px solid #e5e7eb; border-radius: var(--radius-md); padding: 1rem; font-family: inherit;"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+    <script>
+        function sendMessage(event) {
+            event.preventDefault();
+            // Using the new toast system from script.js
+            if (typeof showToast === 'function') {
+                showToast('Thank you for your message! We will get back to you soon.', 'success');
+            } else {
+                alert('Thank you for your message! We will get back to you soon.');
+            }
+            event.target.reset();
+        }
+    </script>
+</body>
+
+</html>

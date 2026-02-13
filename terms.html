@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions - Smart KART</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Terms & Conditions</h2>
+            <p>Please read carefully</p>
+        </div>
+    </div>
+
+    <section class="container" style="margin-bottom: 4rem;">
+        <div class="policy-content"
+            style="background: white; padding: 3rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); max-width: 900px; margin: 0 auto;">
+            <p style="margin-bottom: 1.5rem;">Welcome to Smart KART! By accessing and using our website, you agree to be
+                bound by the following terms and conditions.</p>
+
+            <h3 style="color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.5rem;">Use of Our Website</h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">You agree to use our website only for lawful
+                purposes and in a way that does not infringe the rights of, restrict, or inhibit anyone else's use and
+                enjoyment of the website.</p>
+
+            <h3 style="color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.5rem;">Account Registration
+            </h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">When you create an account with us, you must
+                provide accurate and complete information. You are responsible for maintaining the confidentiality of
+                your account and password.</p>
+
+            <h3 style="color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.5rem;">Ordering and Payment
+            </h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">All orders are subject to availability. We reserve
+                the right to refuse or cancel any order. Payment must be made at the time of ordering.</p>
+
+            <h3 style="color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.5rem;">Pricing and Availability
+            </h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">Prices are subject to change without notice. We
+                strive to display accurate product information, but errors may occur. We reserve the right to correct
+                any errors and update information as needed.</p>
+
+            <h3 style="color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.5rem;">Limitation of Liability
+            </h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">Smart KART shall not be liable for any indirect,
+                incidental, or consequential damages arising from the use of our website or products.</p>
+
+            <p style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; font-size: 0.9rem;">Last
+                updated: October 2023</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

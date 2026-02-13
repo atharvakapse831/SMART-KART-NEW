@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail - Smart KART</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html" class="active">Products</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="margin-top: 4rem; margin-bottom: 4rem;">
+        <div id="product-detail">
+            <!-- Product details loaded by JS -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'));
+            const product = products.find(p => p.id === productId);
+
+            if (!product) {
+                document.getElementById('product-detail').innerHTML = '<p style="text-align:center; padding: 2rem;">Product not found.</p>';
+                return;
+            }
+
+            const productDetail = document.getElementById('product-detail');
+            productDetail.innerHTML = `
+                <div class="product-detail-layout">
+                    <div class="detail-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="detail-info">
+                        <span class="badge badge-new" style="margin-bottom: 1rem; display: inline-block;">${product.category}</span>
+                        <h1>${product.name}</h1>
+                        <div class="detail-meta">
+                            <span class="detail-price">$${product.price}</span>
+                            <span class="product-unit" style="font-size: 1.2rem;">/ ${product.unit}</span>
+                        </div>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">${product.description}</p>
+                        
+                        <div class="detail-actions">
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="decrementQty()">-</button>
+                                <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="${product.stock}">
+                                <button class="quantity-btn" onclick="incrementQty()">+</button>
+                            </div>
+                            <button class="btn btn-primary" onclick="addProductToCart(${product.id})">Add to Cart</button>
+                            <button class="btn btn-outline" onclick="addToWishlist(${product.id})"><i class="far fa-heart"></i></button>
+                        </div>
+                        <p style="margin-top: 1rem; color: #10B981; font-weight: 600;"><i class="fas fa-check-circle"></i> In Stock (${product.stock} available)</p>
+                    </div>
+                </div>
+            `;
+        });
+
+        function incrementQty() {
+            const qty = document.getElementById('quantity');
+            if (qty.value < 99) qty.value = parseInt(qty.value) + 1;
+        }
+
+        function decrementQty() {
+            const qty = document.getElementById('quantity');
+            if (qty.value > 1) qty.value = parseInt(qty.value) - 1;
+        }
+
+        function addProductToCart(productId) {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            // In a real app we'd pass quantity, but for now we loop as script.js addToCart increments by 1
+            for (let i = 0; i < quantity; i++) {
+                addToCart(productId);
+            }
+        }
+    </script>
+</body>
+
+</html>

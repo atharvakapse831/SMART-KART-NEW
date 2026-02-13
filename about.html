@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Smart KART</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-icons">
+                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
+                <a href="wishlist.html" class="nav-icon-link">
+                    <i class="far fa-heart"></i>
+                    <span class="count-badge" id="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="count-badge" id="cart-count">0</span>
+                </a>
+                <div id="user-info" class="user-menu"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>About Smart KART</h2>
+            <p>Our mission is to deliver freshness to your family</p>
+        </div>
+    </div>
+
+    <section class="container" style="margin-bottom: 4rem;">
+        <div class="about-content"
+            style="max-width: 800px; margin: 0 auto; background: white; padding: 3rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
+            <div class="about-section" style="margin-bottom: 3rem;">
+                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-bottom: 1rem;">Our Story</h3>
+                <p style="margin-bottom: 1rem; color: var(--text-muted); line-height: 1.8;">Smart KART was founded with
+                    a simple mission: to bring fresh, high-quality groceries to your doorstep. We believe that everyone
+                    deserves access to fresh, healthy food options without having to leave their homes.</p>
+                <p style="color: var(--text-muted); line-height: 1.8;">Starting from a small local delivery service, we
+                    have grown into a trusted partner for thousands of households, ensuring that the best produce
+                    reaches your kitchen table.</p>
+            </div>
+
+            <div class="about-section" style="margin-bottom: 3rem;">
+                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-bottom: 1rem;">Our Commitment</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">We work directly with local farmers and suppliers
+                    to ensure that our products are always fresh and of the highest quality. Our team carefully selects
+                    each item to meet our strict quality standards.</p>
+            </div>
+
+            <div class="about-section">
+                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-bottom: 1rem;">Why Choose Us?</h3>
+                <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
+                            style="color: var(--secondary-color);"></i> Fresh products</li>
+                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
+                            style="color: var(--secondary-color);"></i> Competitive prices</li>
+                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
+                            style="color: var(--secondary-color);"></i> Fast delivery</li>
+                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
+                            style="color: var(--secondary-color);"></i> Customer support</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="returns.html">Returns & Refunds</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Newsletter</h4>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    <!-- Load API service layer -->
+    <script src="api-service.js"></script>
+    <!-- Load main application script -->
+    <script src="script.js"></script>
+</body>
+
+</html>
