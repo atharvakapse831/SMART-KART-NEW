@@ -5,7 +5,7 @@
 
 class APIService {
     constructor() {
-        this.baseURL = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000/api';
+        this.baseURL = window.APP_CONFIG?.API_BASE_URL || '/api';
         this.timeout = window.APP_CONFIG?.TIMEOUT || 10000;
         this.retryAttempts = window.APP_CONFIG?.RETRY_ATTEMPTS || 3;
         this.retryDelay = window.APP_CONFIG?.RETRY_DELAY || 1000;

@@ -11,58 +11,63 @@
 │  │   Config     │─▶│  API Layer   │◀─│   Logic      │            │
 │  │              │  │              │  │              │            │
 │  │ • Dev/Prod   │  │ • Retry      │  │ • UI Updates │            │
-│  │ • Timeouts   │  │ • Timeout    │  │ • Events     │            │
-│  │ • API URLs   │  │ • Errors     │  │ • Storage    │            │
-│  └──────────────┘  │ • Logging    │  └──────────────┘            │
-│                    │ • Monitor    │                               │
-│                    └──────┬───────┘                               │
+│  │ • Timeouts   │  │ • Errors     │  │ • Events     │            │
+│  │ • API URLs   │  │ • Monitor    │  │ • Storage    │            │
+│  └──────────────┘  └──────┬───────┘  └──────────────┘            │
 │                           │                                       │
 │                           │ HTTP/REST API                         │
 │                           │ (JSON)                                │
+│                           │                                       │
 └───────────────────────────┼───────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      BACKEND (Node.js/Express)                      │
+│                      BACKEND (Django/Python)                        │
 │                                                                     │
 │  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                     Express Middleware                       │  │
+│  │                     Django Middleware                        │  │
 │  │                                                              │  │
 │  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌──────────────┐     │  │
-│  │  │  CORS  │─▶│ Logger │─▶│ Parser │─▶│ Error Handler│     │  │
+│  │  │  CORS  │─▶│  Auth  │─▶│Session │─▶│   Common     │     │  │
 │  │  └────────┘  └────────┘  └────────┘  └──────────────┘     │  │
 │  └──────────────────────────────────────────────────────────────┘  │
 │                                                                     │
 │  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                      API Endpoints                           │  │
+│  │                      API Views (REST Framework)              │  │
 │  │                                                              │  │
-│  │  GET  /health                    Server health check        │  │
-│  │  GET  /api/products              Get all products           │  │
-│  │  GET  /api/products/:id          Get single product         │  │
-│  │  GET  /api/categories            Get categories             │  │
-│  │  POST /api/login                 User authentication        │  │
-│  │  POST /api/signup                User registration          │  │
-│  │  POST /api/orders                Create order               │  │
-│  │  GET  /api/orders/:userId        Get user orders            │  │
+│  │  GET  /health                   Server health check         │  │
+│  │  GET  /api/products             Get all products            │  │
+│  │  GET  /api/products/:id         Get single product          │  │
+│  │  GET  /api/categories           Get categories              │  │
+│  │  POST /api/login                User authentication         │  │
+│  │  POST /api/signup               User registration           │  │
+│  │  POST /api/orders               Create order                │  │
+│  │  GET  /api/orders/:userId       Get user orders             │  │
 │  └──────────────────────────────────────────────────────────────┘  │
 │                           │                                         │
 │                           ▼                                         │
 │  ┌──────────────────────────────────────────────────────────────┐  │
-│  │                    database.js                               │  │
+│  │                    Django ORM & Models                       │  │
 │  │                                                              │  │
-│  │  • Connection Management                                    │  │
-│  │  • Schema Creation                                          │  │
-│  │  • Query Execution                                          │  │
+│  │  • QuerySet API                                            │  │
+│  │  • Migration System                                        │  │
+│  │  • Model Validation                                        │  │
+│  │  • Database Transactions                                   │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                           │                                         │
+│                           ▼                                         │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │                    Psycopg2 Adapter                          │  │
 │  └──────────────────────────────────────────────────────────────┘  │
 │                           │                                         │
 └───────────────────────────┼─────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      DATABASE (SQLite)                              │
+│                      DATABASE (PostgreSQL)                          │
 │                                                                     │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐            │
-│  │   products   │  │    users     │  │   orders     │            │
+│  │ api_product  │  │   api_user   │  │  api_order   │            │
 │  │              │  │              │  │              │            │
 │  │ • id         │  │ • id         │  │ • id         │            │
 │  │ • name       │  │ • name       │  │ • user_id    │            │
@@ -73,7 +78,7 @@
 │  └──────────────┘                                                  │
 │                                                                     │
 │  ┌──────────────┐  ┌──────────────┐                               │
-│  │ categories   │  │ order_items  │                               │
+│  │ api_category │  │ api_orderitem│                               │
 │  │              │  │              │                               │
 │  │ • id         │  │ • id         │                               │
 │  │ • name       │  │ • order_id   │                               │
@@ -81,6 +86,7 @@
 │  └──────────────┘  │ • quantity   │                               │
 │                    │ • price      │                               │
 │                    └──────────────┘                               │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 
 
@@ -96,20 +102,23 @@ User Action: Click "Login" Button
 │       │
 │       ├─▶ HTTP POST to /api/login
 │       │   │
-│       │   ├─▶ server.js: Login endpoint
+│       │   ├─▶ Django URL Resolver: /api/login ➔ views.login
 │       │   │   │
-│       │   │   ├─▶ database.js: Query users table
+│       │   │   ├─▶ views.py: Authenticate User
 │       │   │   │   │
-│       │   │   │   └─▶ SQLite: SELECT * FROM users WHERE email=? AND password=?
-│       │   │   │       │
-│       │   │   │       └─▶ Return user data
+│       │   │   │   ├─▶ models.User.objects.get(email=...)
+│       │   │   │   │   │
+│       │   │   │   │   └─▶ Psycopg2: SELECT * FROM api_user WHERE email=...
+│       │   │   │   │       │
+│       │   │   │   │       └─▶ Return User instance
+│       │   │   │   │
+│       │   │   │   └─▶ Serializer: UserSerializer(user).data
 │       │   │   │
-│       │   │   └─▶ Return JSON response
+│       │   │   └─▶ Return JSON Response
 │       │   │
 │       │   └─▶ apiService receives response
 │       │       │
 │       │       ├─▶ Check status code
-│       │       ├─▶ Handle errors (retry if needed)
 │       │       └─▶ Return data to script.js
 │       │
 │       └─▶ script.js: Update UI
@@ -120,71 +129,29 @@ User Action: Click "Login" Button
 
 
 ═══════════════════════════════════════════════════════════════════════
-                         ERROR HANDLING FLOW
-═══════════════════════════════════════════════════════════════════════
-
-Request Initiated
-│
-├─▶ Timeout Check (10 seconds)
-│   │
-│   ├─▶ Timeout? ──Yes──▶ Retry (Attempt 1/3)
-│   │                     │
-│   │                     ├─▶ Wait 1 second
-│   │                     └─▶ Retry request
-│   │
-│   └─▶ No ──▶ Continue
-│
-├─▶ Network Error?
-│   │
-│   ├─▶ Yes ──▶ Retry (Attempt 2/3)
-│   │           │
-│   │           ├─▶ Wait 2 seconds
-│   │           └─▶ Retry request
-│   │
-│   └─▶ No ──▶ Continue
-│
-├─▶ HTTP Status Check
-│   │
-│   ├─▶ 401 ──▶ "Unauthorized. Please login again."
-│   ├─▶ 404 ──▶ "Resource not found"
-│   ├─▶ 500+ ─▶ "Server error. Please try again later."
-│   └─▶ 200 ──▶ Success!
-│
-└─▶ Show user-friendly message
-
-
-═══════════════════════════════════════════════════════════════════════
                       KEY ARCHITECTURAL BENEFITS
 ═══════════════════════════════════════════════════════════════════════
 
-✅ Separation of Concerns
-   • Config layer handles environment settings
-   • API layer handles communication
-   • App layer handles business logic
-   • Server layer handles endpoints
-   • Database layer handles data
+✅ Robust Foundation (Django)
+   • Secure by default (XSS, CSRF, SQLi protection)
+   • Built-in Admin Interface
+   • Powerful ORM
+   • Scalable architecture (MVT - Model View Template)
 
-✅ Error Resilience
-   • Automatic retry on failure
-   • Timeout protection
-   • User-friendly error messages
-   • Connection monitoring
+✅ Professional Database (PostgreSQL)
+   • ACID compliance
+   • Concurrent connections
+   • Rich data types (JSONB, Arrays)
+   • Reliability and performance
+
+✅ RESTful API Design (DRF)
+   • Standardized responses
+   • Automated serialization
+   • Browsable API interface
+   • Authentication & Permissions support
 
 ✅ Maintainability
-   • Single source of truth for API calls
-   • Centralized configuration
-   • Consistent error handling
-   • Easy to test and debug
-
-✅ Scalability
-   • Easy to add new endpoints
-   • Simple to extend functionality
-   • Clean code structure
-   • Modular design
-
-✅ Developer Experience
-   • Clear logging
-   • Easy debugging
-   • Comprehensive documentation
-   • Best practices followed
+   • Clean separation of concerns
+   • Clear project structure (backend/frontend split)
+   • Easy to extend with new Django apps
 ```
