@@ -1,120 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery Store - Home</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart KART — Fresh Groceries Delivered</title>
+<meta name="description" content="Shop fresh groceries, organic produce, dairy, and more with same-day delivery at Smart KART."/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+.promo-banner { background:var(--accent); color:#fff; text-align:center; padding:0.5rem 1rem; font-size:0.8rem; font-weight:600; letter-spacing:0.04em; }
+.deals-section { background: linear-gradient(135deg, #0F4C2A, #15803D); color:#fff; padding:4rem 0; }
+.deals-section .section-label, .deals-section .section-title { color:#fff; }
+.deals-section .section-desc { color:rgba(255,255,255,0.75); }
+.deal-card { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:var(--r-lg); padding:1.5rem; backdrop-filter:blur(10px); transition:var(--t); }
+.deal-card:hover { background:rgba(255,255,255,0.18); transform:translateY(-4px); }
+.deal-card .badge { background:rgba(255,255,255,0.2); color:#fff; margin-bottom:1rem; }
+.deal-discount { font-size:2.5rem; font-weight:800; margin:0.5rem 0; }
+.newsletter-section { background:var(--bg-subtle); }
+.nl-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-xl); padding:3rem; text-align:center; max-width:600px; margin:0 auto; }
+.nl-form { display:flex; gap:0.75rem; margin-top:1.5rem; }
+.nl-form input { flex:1; border-radius:var(--r-full); padding:0.85rem 1.25rem; }
+.features-section { background:var(--bg); }
+.features-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.5rem; }
+.feature-card { text-align:center; padding:2rem 1rem; }
+.feature-icon { width:64px; height:64px; border-radius:var(--r-lg); background:var(--primary-light); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.4rem; color:var(--primary); }
+.feature-card h3 { font-size:1rem; margin-bottom:0.4rem; }
+.feature-card p { font-size:0.85rem; color:var(--text-muted); }
+</style>
 </head>
-
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
-            <ul class="nav-links">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
-                    <i class="far fa-heart"></i>
-                    <span class="count-badge" id="wishlist-count">0</span>
-                </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="count-badge" id="cart-count">0</span>
-                </a>
-                <div id="user-info" class="user-menu"></div>
-            </div>
-        </nav>
-    </header>
 
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>Fresh Groceries Delivered to Your Doorstep</h1>
-            <p>Experience the finest quality organic produce and essentials. Freshness guaranteed, everyday.</p>
-            <a href="products.html" class="btn btn-primary">Shop Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-    </section>
+<!-- Promo Banner -->
+<div class="promo-banner">🎉 Free delivery on orders above ₹499 — Use code <strong>FRESH50</strong> for 50% off your first order!</div>
 
-    <section class="container" style="margin-top: 3rem; margin-bottom: 2rem;">
-        <div class="section-header">
-            <h2>Shop by Category</h2>
-            <p>Find exactly what you need</p>
+<!-- Header -->
+<header id="header">
+  <div class="container">
+    <nav>
+      <a href="index.html" class="logo"><i class="fas fa-shopping-basket"></i> Smart<span>KART</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-icon" id="theme-toggle" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+        <a class="nav-icon" href="wishlist.html" title="Wishlist"><i class="fas fa-heart"></i></a>
+        <a class="nav-icon" href="cart.html" title="Cart"><i class="fas fa-shopping-cart"></i><span class="badge-dot" id="cart-count" style="display:none">0</span></a>
+        <a href="login.html" class="btn btn-primary btn-sm" id="nav-login">Login</a>
+        <div id="nav-user" style="display:none;align-items:center;gap:0.5rem;">
+          <span id="nav-username" class="user-btn"><i class="fas fa-user-circle"></i> Me</span>
+          <a id="nav-admin-link" href="admin/index.html" style="display:none" class="btn btn-ghost btn-sm">Admin</a>
+          <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
         </div>
-        <div id="category-grid" class="category-grid">
-            <!-- Categories loaded by JS -->
-        </div>
-    </section>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
 
-    <section class="products container">
-        <div class="section-header">
-            <h2>Featured Products</h2>
-            <p>Hand-picked weekly favorites just for you</p>
-        </div>
-        <div id="featured-products" class="product-grid">
-            <!-- Featured products loaded by JS -->
-        </div>
-        <div style="text-align: center; margin-top: 2rem;">
-            <a href="products.html" class="btn btn-outline">View All Products</a>
-        </div>
-    </section>
+<!-- Mobile Nav -->
+<nav id="mobile-nav">
+  <a href="index.html"><i class="fas fa-home"></i> Home</a>
+  <a href="products.html"><i class="fas fa-store"></i> Products</a>
+  <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+  <a href="orders.html"><i class="fas fa-box"></i> My Orders</a>
+  <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+  <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+  <a href="login.html" id="mobile-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+</nav>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Customer Care</h4>
-                    <ul>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="returns.html">Returns & Refunds</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-leaf"></i> Organic &amp; Fresh</div>
+      <h1>Your Local Market,<br/><span class="highlight">Delivered Fast</span></h1>
+      <p>Farm-fresh produce, dairy, meat, bakery &amp; more — right to your door. Quality you can taste, prices you'll love.</p>
+      <div class="hero-cta">
+        <a href="products.html" class="btn btn-primary btn-lg"><i class="fas fa-shopping-basket"></i> Shop Now</a>
+        <a href="products.html?featured=1" class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.3);font-size:0.9rem;padding:0.9rem 1.75rem;border-radius:999px;">Today's Deals</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>500+</strong><span>Products</span></div>
+        <div class="hero-stat"><strong>2hr</strong><span>Delivery</span></div>
+        <div class="hero-stat"><strong>10k+</strong><span>Happy Customers</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Load configuration first -->
-    <script src="config.js"></script>
-    <!-- Load API service layer -->
-    <script src="api-service.js"></script>
-    <!-- Load main application script -->
-    <script src="script.js"></script>
+<!-- Categories -->
+<section class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Browse by Category</span>
+      <h2 class="section-title">What Are You Looking For?</h2>
+    </div>
+    <div class="category-grid" id="category-grid">
+      <!-- skeleton -->
+      <div class="skeleton-card" style="height:160px"></div>
+      <div class="skeleton-card" style="height:160px"></div>
+      <div class="skeleton-card" style="height:160px"></div>
+      <div class="skeleton-card" style="height:160px"></div>
+      <div class="skeleton-card" style="height:160px"></div>
+      <div class="skeleton-card" style="height:160px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section>
+  <div class="container">
+    <div class="section-top">
+      <div>
+        <span class="section-label">Hand-Picked</span>
+        <h2 class="section-title">Featured Products</h2>
+      </div>
+      <a href="products.html?featured=1" class="btn btn-ghost">View All <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="product-grid" id="featured-grid">
+      <!-- skeletons -->
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+      <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-shipping-fast"></i></div><h3>Fast Delivery</h3><p>Same-day delivery within 2 hours to your doorstep.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-leaf"></i></div><h3>100% Organic</h3><p>Certified organic produce sourced from trusted local farms.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h3>Secure Payments</h3><p>Shop safely with encrypted payments and COD options.</p></div>
+      <div class="feature-card"><div class="feature-icon"><i class="fas fa-undo"></i></div><h3>Easy Returns</h3><p>Not satisfied? Return within 24 hours, no questions asked.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Deals Section -->
+<section class="deals-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Limited Time</span>
+      <h2 class="section-title">Today's Best Deals</h2>
+      <p class="section-desc">Grab these exclusive offers before they're gone!</p>
+    </div>
+    <div id="deals-grid" class="product-grid" style="color:inherit"></div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="nl-card">
+      <span class="section-label">Stay Updated</span>
+      <h2 class="section-title" style="font-size:1.75rem">Get Fresh Deals in Your Inbox</h2>
+      <p style="color:var(--text-muted);margin-top:0.5rem">Subscribe for weekly discounts, new arrivals, and seasonal recipes.</p>
+      <form class="nl-form" onsubmit="handleNL(event)">
+        <input type="email" id="nl-email" placeholder="Your email address" required/>
+        <button type="submit" class="btn btn-primary">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo" style="color:var(--primary)"><i class="fas fa-shopping-basket"></i> Smart<span style="color:#E2E8F0">KART</span></div>
+        <p style="margin-top:1rem">Fresh, affordable groceries delivered to your door. Supporting local farmers since 2020.</p>
+      </div>
+      <div class="footer-links"><h4>Shop</h4><a href="products.html">All Products</a><a href="products.html?category=Fruits">Fruits</a><a href="products.html?category=Vegetables">Vegetables</a><a href="products.html?category=Dairy">Dairy</a></div>
+      <div class="footer-links"><h4>Account</h4><a href="login.html">Login</a><a href="orders.html">My Orders</a><a href="profile.html">Profile</a><a href="wishlist.html">Wishlist</a></div>
+      <div class="footer-links"><h4>Company</h4><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Smart KART. All rights reserved.</span>
+      <span>Made with ❤️ for fresh food lovers</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Bottom Mobile Nav -->
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item active"><i class="fas fa-home"></i>Home</a>
+  <a href="products.html" class="bottom-nav-item"><i class="fas fa-store"></i>Shop</a>
+  <a href="cart.html" class="bottom-nav-item"><i class="fas fa-shopping-cart"></i>Cart</a>
+  <a href="orders.html" class="bottom-nav-item"><i class="fas fa-box"></i>Orders</a>
+  <a href="profile.html" class="bottom-nav-item"><i class="fas fa-user"></i>Profile</a>
+</nav>
+
+<script src="api-service.js"></script>
+<script>
+const ICON_MAP = { Fruits:'fa-apple-alt', Vegetables:'fa-carrot', Dairy:'fa-cheese', Meat:'fa-drumstick-bite', Bakery:'fa-bread-slice', Grains:'fa-seedling' };
+
+function productCardHTML(p) {
+  const price = p.discount_price ? `<span class="product-price">${formatPrice(p.discount_price)}</span> <span class="product-old-price">${formatPrice(p.product_price)}</span>` : `<span class="product-price">${formatPrice(p.product_price)}</span>`;
+  const badge = p.discount_price ? `<span class="badge badge-orange">${Math.round((p.product_price-p.discount_price)/p.product_price*100)}% OFF</span>` : '';
+  const featured = p.is_featured ? '<span class="badge badge-green">Featured</span>' : '';
+  return `<div class="product-card">
+    <a href="product-detail.html?id=${p.id}">
+      <div class="product-img-wrap">
+        <img src="${p.product_image||'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80'}" alt="${p.product_name}" loading="lazy"/>
+        <div class="product-badges">${badge}${featured}</div>
+        <button class="product-wishlist-btn" onclick="toggleWishlist(event,${p.id},'${p.product_name}')"><i class="far fa-heart"></i></button>
+      </div>
+    </a>
+    <div class="product-body">
+      <div class="product-cat">${p.category_name||''}</div>
+      <div class="product-name"><a href="product-detail.html?id=${p.id}">${p.product_name}</a></div>
+      <div class="product-rating">${renderStars(p.rating)} <span>(${p.review_count})</span></div>
+      <div class="product-footer">
+        <div class="product-pricing">${price} <span class="product-old-price" style="text-decoration:none;color:var(--text-light)">${p.unit?'/ '+p.unit:''}</span></div>
+        <button class="product-add-btn" onclick="addToCart(${p.id},'${p.product_name}')" title="Add to Cart"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function loadCategories() {
+  try {
+    const r = await productsAPI.cats();
+    const cats = r.data || [];
+    document.getElementById('category-grid').innerHTML = cats.length
+      ? cats.map(c => `<a href="products.html?category=${encodeURIComponent(c.category_name)}" class="category-card">
+          <div class="category-icon-wrap"><i class="fas ${ICON_MAP[c.category_name]||'fa-box'}"></i></div>
+          <div class="category-name">${c.category_name}</div>
+          <div class="category-count">${c.product_count} items</div>
+        </a>`).join('')
+      : '<p style="color:var(--text-muted)">No categories found.</p>';
+  } catch { document.getElementById('category-grid').innerHTML = '<p style="color:var(--text-muted)">Could not load categories.</p>'; }
+}
+
+async function loadFeatured() {
+  try {
+    const r = await productsAPI.list({ featured:'1', page_size:8 });
+    const prods = r.data || [];
+    document.getElementById('featured-grid').innerHTML = prods.length
+      ? prods.map(productCardHTML).join('')
+      : '<p style="color:var(--text-muted);grid-column:1/-1">No featured products.</p>';
+  } catch { document.getElementById('featured-grid').innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1">Could not load products.</p>'; }
+}
+
+async function loadDeals() {
+  try {
+    const r = await productsAPI.list({ page_size:4 });
+    const prods = (r.data || []).filter(p => p.discount_price);
+    const grid = document.getElementById('deals-grid');
+    if (!prods.length) { grid.innerHTML = '<p style="color:rgba(255,255,255,0.7);grid-column:1/-1">No deals right now. Check back soon!</p>'; return; }
+    grid.innerHTML = prods.map(p => `<div class="deal-card">
+      <span class="badge badge-orange">${Math.round((p.product_price-p.discount_price)/p.product_price*100)}% OFF</span>
+      <div class="product-name" style="color:#fff;margin-bottom:0.5rem">${p.product_name}</div>
+      <div class="deal-discount">${formatPrice(p.discount_price)}</div>
+      <div style="color:rgba(255,255,255,0.6);text-decoration:line-through;font-size:0.85rem;margin-bottom:1rem">${formatPrice(p.product_price)}</div>
+      <a href="product-detail.html?id=${p.id}" class="btn btn-primary btn-sm">Grab Deal</a>
+    </div>`).join('');
+  } catch {}
+}
+
+async function addToCart(productId, name) {
+  if (!Auth.isLoggedIn()) { showToast('Please log in to add to cart', 'warning'); setTimeout(() => window.location.href='login.html', 1200); return; }
+  try {
+    await cartAPI.add(productId, 1);
+    showToast(`${name} added to cart!`, 'success');
+    refreshCartCount();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function toggleWishlist(e, id, name) {
+  e.preventDefault(); e.stopPropagation();
+  const items = JSON.parse(localStorage.getItem('sk_wishlist') || '[]');
+  const idx = items.indexOf(id);
+  if (idx >= 0) { items.splice(idx, 1); showToast(`${name} removed from wishlist`, 'info'); }
+  else { items.push(id); showToast(`${name} saved to wishlist ❤️`, 'success'); }
+  localStorage.setItem('sk_wishlist', JSON.stringify(items));
+}
+
+function handleNL(e) {
+  e.preventDefault();
+  showToast('🎉 Subscribed successfully!', 'success');
+  document.getElementById('nl-email').value = '';
+}
+
+loadCategories();
+loadFeatured();
+loadDeals();
+</script>
 </body>
-
 </html>

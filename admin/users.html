@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customers — Admin | Smart KART</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="admin-shared.css" />
+    <style>
+        /* Filter tabs */
+        .filter-tabs {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .filter-tab {
+            padding: .4rem 1rem;
+            border-radius: var(--r-full);
+            font-size: .8rem;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .filter-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, .25);
+            border-radius: 999px;
+            width: 18px;
+            height: 18px;
+            font-size: .7rem;
+            margin-left: .35rem;
+        }
+
+        .filter-tab:not(.active) .tab-count {
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+        }
+
+        /* Stats */
+        .user-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .user-stat-card {
+            flex: 1;
+            min-width: 110px;
+            padding: .9rem 1.1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            text-align: center;
+        }
+
+        .user-stat-card .num {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .user-stat-card .lbl {
+            font-size: .7rem;
+            color: var(--text-muted);
+            margin-top: .2rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        /* Avatar */
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Password strength */
+        .pwd-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: var(--bg-subtle);
+            margin-top: .35rem;
+            overflow: hidden;
+        }
+
+        .pwd-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width .3s, background .3s;
+        }
+
+        /* Modal wide */
+        .modal {
+            max-width: 520px !important;
+        }
+
+        /* Actions */
+        .action-btns {
+            display: flex;
+            gap: .3rem;
+        }
+
+        /* Banned row */
+        tr.banned-row td {
+            opacity: .6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="a-sidebar-overlay" id="a-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="a-sidebar" id="a-sidebar">
+        <div class="a-sidebar-logo">
+            <div class="a-sidebar-logo-icon"><i class="fas fa-shopping-basket"></i></div>
+            <div class="a-sidebar-logo-text">Smart<span>KART</span></div>
+        </div>
+        <nav class="a-sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="index.html" class="a-nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="analytics.html" class="a-nav-item"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <div class="nav-section">Catalogue</div>
+            <a href="products.html" class="a-nav-item"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.html" class="a-nav-item"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <div class="nav-section">People</div>
+            <a href="users.html" class="a-nav-item active"><i class="fas fa-users"></i> Customers</a>
+            <a href="coupons.html" class="a-nav-item"><i class="fas fa-tag"></i> Coupons</a>
+            <div class="nav-section">System</div>
+            <a href="../index.html" class="a-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+            <a href="#" class="a-nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="a-sidebar-footer">
+            <div class="a-sidebar-user">
+                <div class="a-sidebar-avatar" id="a-sb-avatar">A</div>
+                <div>
+                    <div class="a-sidebar-user-name" id="a-sb-name">Admin</div>
+                    <div class="a-sidebar-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- TOPBAR -->
+    <header class="a-topbar">
+        <button class="a-icon-btn a-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="a-topbar-search">
+            <i class="fas fa-search"></i>
+            <input id="user-search" placeholder="Search customers…" oninput="applyFilters()" />
+        </div>
+        <div class="a-topbar-right">
+            <div class="a-topbar-datetime">
+                <div class="a-topbar-date" id="a-tb-date"></div>
+                <div class="a-topbar-time" id="a-tb-time"></div>
+            </div>
+            <button class="a-icon-btn" id="a-theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="a-topbar-user">
+                <div class="a-topbar-user-av" id="a-tb-avatar">A</div>
+                <span class="a-topbar-user-name" id="a-tb-name">Admin</span>
+                <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted)"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="a-main">
+        <div class="a-content">
+            <div class="a-page-header">
+                <div>
+                    <div class="a-page-title"><i class="fas fa-users"></i> Customers</div>
+                    <div class="a-page-sub">Manage user accounts and roles</div>
+                </div>
+                <div class="a-page-actions">
+                    <button class="a-btn a-btn-primary" onclick="openModal()">
+                        <i class="fas fa-user-plus"></i> Add User
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-content">
+
+                <!-- Stats -->
+                <div class="a-stats-row">
+                    <div class="a-stat" style="--sc:#64748b">
+                        <div class="a-stat-icon"><i class="fas fa-users"></i></div>
+                        <div>
+                            <div class="a-stat-val" id="st-total">—</div>
+                            <div class="a-stat-lbl">Total</div>
+                        </div>
+                    </div>
+                    <div class="a-stat" style="--sc:#22c55e">
+                        <div class="a-stat-icon"><i class="fas fa-user-check"></i></div>
+                        <div>
+                            <div class="a-stat-val" id="st-customers">—</div>
+                            <div class="a-stat-lbl">Customers</div>
+                        </div>
+                    </div>
+                    <div class="a-stat" style="--sc:#f59e0b">
+                        <div class="a-stat-icon"><i class="fas fa-user-shield"></i></div>
+                        <div>
+                            <div class="a-stat-val" id="st-admins">—</div>
+                            <div class="a-stat-lbl">Admins</div>
+                        </div>
+                    </div>
+                    <div class="a-stat" style="--sc:#ef4444">
+                        <div class="a-stat-icon"><i class="fas fa-user-slash"></i></div>
+                        <div>
+                            <div class="a-stat-val" id="st-banned">—</div>
+                            <div class="a-stat-lbl">Banned</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="a-tabs">
+                    <button class="a-tab active" data-filter="all" onclick="setTab(this,'all')">All<span
+                            class="a-tab-count" id="tc-all">0</span></button>
+                    <button class="a-tab" data-filter="customer" onclick="setTab(this,'customer')"><i
+                            class="fas fa-user"></i> Customers<span class="a-tab-count"
+                            id="tc-customer">0</span></button>
+                    <button class="a-tab" data-filter="admin" onclick="setTab(this,'admin')"><i
+                            class="fas fa-user-shield"></i> Admins<span class="a-tab-count"
+                            id="tc-admin">0</span></button>
+                    <button class="a-tab" data-filter="banned" onclick="setTab(this,'banned')"><i
+                            class="fas fa-ban"></i> Banned<span class="a-tab-count" id="tc-banned">0</span></button>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+                    <select class="a-select" id="sort-filter" onchange="applyFilters()">
+                        <option value="-last_login">Last Login: Newest</option>
+                        <option value="-date_joined">Joined: Newest First</option>
+                        <option value="customer_name">Name A–Z</option>
+                    </select>
+                </div>
+
+                <!-- Table -->
+                <div class="a-table-wrap">
+                    <table class="a-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <tr>
+                                <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">
+                                    <i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="table-footer" style="margin-top:.75rem;font-size:.8rem;color:var(--text-muted)"></div>
+            </div>
+    </main>
+    </div>
+
+    <!-- ══════════════════ ADD / EDIT USER MODAL ══════════════════ -->
+    <div class="modal-overlay" id="user-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Add User</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id" />
+
+                <!-- Avatar preview -->
+                <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+                    <div class="user-avatar" id="modal-avatar" style="width:56px;height:56px;font-size:1.4rem">?</div>
+                    <div style="flex:1">
+                        <label class="form-label">Avatar URL <span
+                                style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+                        <input class="form-control" id="f-avatar" placeholder="https://..." oninput="previewAvatar()" />
+                    </div>
+                </div>
+
+                <!-- Name + Email -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input class="form-control" id="f-name" placeholder="John Doe" oninput="previewAvatar()" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input class="form-control" type="email" id="f-email" placeholder="user@example.com" />
+                    </div>
+                </div>
+
+                <!-- Phone + Role -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input class="form-control" type="tel" id="f-phone" placeholder="+91 98765 43210" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-control" id="f-role">
+                            <option value="customer">👤 Customer</option>
+                            <option value="admin">🛡️ Admin</option>
+                            <option value="superadmin">👑 Super Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" id="f-address" rows="2"
+                        placeholder="123 Main St, City, State…"></textarea>
+                </div>
+
+                <!-- Status -->
+                <div class="form-group">
+                    <label class="form-label">Account Status</label>
+                    <select class="form-control" id="f-status">
+                        <option value="active">✅ Active</option>
+                        <option value="banned">🚫 Banned</option>
+                    </select>
+                </div>
+
+                <!-- Password section -->
+                <div id="password-section">
+                    <div class="form-group">
+                        <label class="form-label" id="pwd-label">Password *</label>
+                        <div style="position:relative">
+                            <input class="form-control" type="password" id="f-password" placeholder="Min 6 characters"
+                                oninput="checkPwd()" style="padding-right:2.5rem" />
+                            <button type="button" onclick="togglePwd()"
+                                style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer">
+                                <i class="fas fa-eye" id="pwd-eye"></i>
+                            </button>
+                        </div>
+                        <div class="pwd-bar">
+                            <div class="pwd-fill" id="pwd-fill" style="width:0%"></div>
+                        </div>
+                        <div id="pwd-hint" style="font-size:.72rem;margin-top:.3rem;color:var(--text-muted)"></div>
+                    </div>
+                    <div class="form-group" id="confirm-pwd-group">
+                        <label class="form-label">Confirm Password *</label>
+                        <input class="form-control" type="password" id="f-confirm" placeholder="Re-enter password"
+                            oninput="checkPwd()" />
+                    </div>
+                </div>
+
+                <!-- Edit-only: optional reset -->
+                <div id="reset-pwd-section" style="display:none">
+                    <div style="border-top:1px solid var(--border);margin:.75rem 0;padding-top:.75rem">
+                        <label
+                            style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:flex;align-items:center;gap:.5rem;cursor:pointer">
+                            <input type="checkbox" id="do-reset-pwd" onchange="toggleResetPwd()"
+                                style="accent-color:var(--primary)" />
+                            Reset password for this user
+                        </label>
+                    </div>
+                    <div id="reset-pwd-fields" style="display:none">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                            <div class="form-group">
+                                <label class="form-label">New Password</label>
+                                <input class="form-control" type="password" id="f-newpwd" placeholder="Min 6 chars" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password</label>
+                                <input class="form-control" type="password" id="f-newpwd-confirm"
+                                    placeholder="Re-enter" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="save-btn" onclick="saveUser()">
+                    <i class="fas fa-user-plus"></i> Create User
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════ USER DETAIL DRAWER ══════════════════ -->
+    <div class="modal-overlay" id="detail-drawer">
+        <div class="modal" style="max-width:400px">
+            <div class="modal-header">
+                <h3>User Details</h3>
+                <button class="modal-close" onclick="closeDrawer()">×</button>
+            </div>
+            <div class="modal-body" id="drawer-content"></div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeDrawer()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../api-service.js"></script>
+    <script>
+        let allUsers = [], activeTab = 'all';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.isAdmin()) { window.location.href = '../login.html'; return; }
+            loadUsers();
+        });
+
+        // ─── Load ────────────────────────────────────────────────────
+        async function loadUsers() {
+            document.getElementById('users-tbody').innerHTML =
+                `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i></td></tr>`;
+            const r = await adminAPI.customers().catch(() => ({ data: [] }));
+            allUsers = r.data || [];
+            updateStats();
+            updateTabCounts();
+            applyFilters();
+        }
+
+        // ─── Stats + Counts ──────────────────────────────────────────
+        function updateStats() {
+            document.getElementById('st-total').textContent = allUsers.length;
+            document.getElementById('st-customers').textContent = allUsers.filter(u => u.role === 'customer').length;
+            document.getElementById('st-admins').textContent = allUsers.filter(u => u.role === 'admin' || u.role === 'superadmin').length;
+            document.getElementById('st-banned').textContent = allUsers.filter(u => u.customer_status === 'banned').length;
+        }
+
+        function updateTabCounts() {
+            document.getElementById('tc-all').textContent = allUsers.length;
+            document.getElementById('tc-customer').textContent = allUsers.filter(u => u.role === 'customer').length;
+            document.getElementById('tc-admin').textContent = allUsers.filter(u => u.role === 'admin' || u.role === 'superadmin').length;
+            document.getElementById('tc-banned').textContent = allUsers.filter(u => u.customer_status === 'banned').length;
+        }
+
+        // ─── Filter + Sort ───────────────────────────────────────────
+        function setTab(btn, tab) {
+            document.querySelectorAll('.a-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            activeTab = tab;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('user-search').value.toLowerCase();
+            const sort = document.getElementById('sort-filter').value;
+
+            let users = allUsers.filter(u => {
+                const matchQ = !q ||
+                    u.customer_name.toLowerCase().includes(q) ||
+                    u.customer_email.toLowerCase().includes(q) ||
+                    (u.customer_phone || '').toLowerCase().includes(q);
+                const matchTab = activeTab === 'all' ? true
+                    : activeTab === 'banned' ? u.customer_status === 'banned'
+                        : activeTab === 'admin' ? (u.role === 'admin' || u.role === 'superadmin')
+                            : u.role === activeTab;
+                return matchQ && matchTab;
+            });
+
+            users = [...users].sort((a, b) => {
+                if (sort === 'customer_name') return a.customer_name.localeCompare(b.customer_name);
+                if (sort === '-customer_name') return b.customer_name.localeCompare(a.customer_name);
+                return new Date(b.created_date) - new Date(a.created_date);
+            });
+
+            renderTable(users);
+            document.getElementById('table-footer').textContent = `Showing ${users.length} of ${allUsers.length} users`;
+        }
+
+        // ─── Render ──────────────────────────────────────────────────
+        function avatarHtml(u, size = 38) {
+            const initials = u.customer_name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+            const colors = ['#22C55E', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#14B8A6'];
+            const bg = colors[u.id % colors.length];
+            if (u.avatar) {
+                return `<div class="user-avatar" style="width:${size}px;height:${size}px"><img src="${u.avatar}" onerror="this.parentElement.innerHTML='${initials}';this.parentElement.style.background='${bg}'" /></div>`;
+            }
+            return `<div class="user-avatar" style="width:${size}px;height:${size}px;background:${bg};font-size:${size * 0.38}px">${initials}</div>`;
+        }
+
+        function roleBadge(role) {
+            if (role === 'superadmin') return `<span class="badge badge-red"><i class="fas fa-crown"></i> Super Admin</span>`;
+            if (role === 'admin') return `<span class="badge badge-orange"><i class="fas fa-user-shield"></i> Admin</span>`;
+            return `<span class="badge badge-green"><i class="fas fa-user"></i> Customer</span>`;
+        }
+
+        function statusBadge(status) {
+            if (status === 'active') return `<span class="badge badge-green">Active</span>`;
+            if (status === 'banned') return `<span class="badge badge-red"><i class="fas fa-ban"></i> Banned</span>`;
+            return `<span class="badge badge-gray">${status}</span>`;
+        }
+
+        function renderTable(users) {
+            if (!users.length) {
+                document.getElementById('users-tbody').innerHTML =
+                    `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">
+                <i class="fas fa-users-slash" style="font-size:2rem;display:block;margin-bottom:.75rem"></i>
+                No users match your filters.
+            </td></tr>`;
+                return;
+            }
+
+            document.getElementById('users-tbody').innerHTML = users.map(u => {
+                const isBanned = u.customer_status === 'banned';
+                return `<tr class="${isBanned ? 'banned-row' : ''}">
+  <td>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      ${avatarHtml(u, 38)}
+      <div>
+        <div style="font-weight:700;font-size:.9rem">${u.customer_name}</div>
+        <div style="font-size:.72rem;color:var(--text-muted)">ID #${u.id}</div>
+      </div>
+    </div>
+  </td>
+  <td style="font-size:.85rem;color:var(--text-muted)">${u.customer_email}</td>
+  <td style="font-size:.85rem">${u.customer_phone || '—'}</td>
+  <td>${roleBadge(u.role)}</td>
+  <td>${statusBadge(u.customer_status)}</td>
+  <td style="font-size:.8rem;color:var(--text-muted)">${formatDate(u.created_date)}</td>
+  <td>
+    <div class="action-btns">
+      <button class="btn btn-ghost btn-sm" onclick="viewDetails(${u.id})" title="View Details">
+        <i class="fas fa-eye"></i>
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="editUser(${u.id})" title="Edit User">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn ${isBanned ? 'btn-primary' : 'btn-ghost'} btn-sm"
+              onclick="toggleBan(${u.id},'${u.customer_status}')"
+              title="${isBanned ? 'Unban User' : 'Ban User'}">
+        <i class="fas ${isBanned ? 'fa-check-circle' : 'fa-ban'}"></i>
+        ${isBanned ? 'Unban' : 'Ban'}
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id},'${u.customer_name.replace(/'/g, "\\'")}')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </td>
+</tr>`;
+            }).join('');
+        }
+
+        // ─── Modal ───────────────────────────────────────────────────
+        function openModal(u = null) {
+            const isEdit = !!u;
+            document.getElementById('modal-title').textContent = isEdit ? `Edit — ${u.customer_name}` : 'Add New User';
+            document.getElementById('save-btn').innerHTML = isEdit
+                ? '<i class="fas fa-save"></i> Save Changes'
+                : '<i class="fas fa-user-plus"></i> Create User';
+            document.getElementById('edit-id').value = u?.id || '';
+            document.getElementById('f-name').value = u?.customer_name || '';
+            document.getElementById('f-email').value = u?.customer_email || '';
+            document.getElementById('f-email').disabled = isEdit; // email can't change
+            document.getElementById('f-phone').value = u?.customer_phone || '';
+            document.getElementById('f-role').value = u?.role || 'customer';
+            document.getElementById('f-address').value = u?.customer_address || '';
+            document.getElementById('f-status').value = u?.customer_status || 'active';
+            document.getElementById('f-avatar').value = u?.avatar || '';
+            // Password sections
+            document.getElementById('password-section').style.display = isEdit ? 'none' : 'block';
+            document.getElementById('reset-pwd-section').style.display = isEdit ? 'block' : 'none';
+            document.getElementById('do-reset-pwd').checked = false;
+            document.getElementById('reset-pwd-fields').style.display = 'none';
+            document.getElementById('f-newpwd').value = '';
+            document.getElementById('f-newpwd-confirm').value = '';
+            document.getElementById('f-password').value = '';
+            document.getElementById('f-confirm').value = '';
+            previewAvatar();
+            document.getElementById('user-modal').classList.add('open');
+            setTimeout(() => document.getElementById('f-name').focus(), 100);
+        }
+
+        function closeModal() { document.getElementById('user-modal').classList.remove('open'); }
+
+        function editUser(id) {
+            const u = allUsers.find(x => x.id === id);
+            if (u) openModal(u);
+        }
+
+        function previewAvatar() {
+            const name = document.getElementById('f-name').value.trim();
+            const avatarEl = document.getElementById('modal-avatar');
+            const avatarUrl = document.getElementById('f-avatar').value.trim();
+            const initials = name ? name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() : '?';
+            if (avatarUrl && avatarUrl.startsWith('http')) {
+                avatarEl.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.textContent='${initials}'" />`;
+            } else {
+                avatarEl.textContent = initials;
+            }
+        }
+
+        function toggleResetPwd() {
+            const show = document.getElementById('do-reset-pwd').checked;
+            document.getElementById('reset-pwd-fields').style.display = show ? 'grid' : 'none';
+            document.getElementById('reset-pwd-fields').style.gridTemplateColumns = '1fr 1fr';
+            document.getElementById('reset-pwd-fields').style.gap = '1rem';
+        }
+
+        // ─── Password strength ───────────────────────────────────────
+        function checkPwd() {
+            const pwd = document.getElementById('f-password').value;
+            const conf = document.getElementById('f-confirm').value;
+            const fill = document.getElementById('pwd-fill');
+            const hint = document.getElementById('pwd-hint');
+            let score = 0, tips = [];
+            if (pwd.length >= 6) score++; else tips.push('6+ chars');
+            if (/[A-Z]/.test(pwd)) score++; else tips.push('uppercase');
+            if (/[0-9]/.test(pwd)) score++; else tips.push('number');
+            if (/[^A-Za-z0-9]/.test(pwd)) score++; else tips.push('symbol');
+            const pct = (score / 4 * 100) + '%';
+            const colors = ['#EF4444', '#F59E0B', '#3B82F6', '#22C55E'];
+            fill.style.width = pwd ? pct : '0%';
+            fill.style.background = colors[score - 1] || '#EF4444';
+            if (pwd && conf && pwd !== conf) hint.innerHTML = '<span style="color:#EF4444">❌ Passwords do not match</span>';
+            else if (pwd && conf && pwd === conf) hint.innerHTML = '<span style="color:#22C55E">✅ Passwords match</span>';
+            else hint.textContent = pwd ? 'Add: ' + tips.join(', ') : '';
+        }
+
+        function togglePwd() {
+            const inp = document.getElementById('f-password');
+            const eye = document.getElementById('pwd-eye');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            eye.className = inp.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+
+        // ─── Save ────────────────────────────────────────────────────
+        async function saveUser() {
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('f-name').value.trim();
+            const email = document.getElementById('f-email').value.trim();
+            if (!name) { showToast('Full name is required', 'warning'); document.getElementById('f-name').focus(); return; }
+            if (!id && !email) { showToast('Email is required', 'warning'); document.getElementById('f-email').focus(); return; }
+
+            const data = {
+                customer_name: name,
+                customer_phone: document.getElementById('f-phone').value.trim() || null,
+                customer_address: document.getElementById('f-address').value.trim() || null,
+                role: document.getElementById('f-role').value,
+                customer_status: document.getElementById('f-status').value,
+                avatar: document.getElementById('f-avatar').value.trim() || null,
+            };
+
+            if (!id) {
+                // Create — require email + password
+                const pwd = document.getElementById('f-password').value;
+                const conf = document.getElementById('f-confirm').value;
+                if (!email) { showToast('Email is required', 'warning'); return; }
+                if (pwd.length < 6) { showToast('Password must be at least 6 characters', 'warning'); return; }
+                if (pwd !== conf) { showToast('Passwords do not match', 'warning'); return; }
+                data.customer_email = email;
+                data.password = pwd;
+            } else {
+                // Edit — optional password reset
+                if (document.getElementById('do-reset-pwd').checked) {
+                    const np = document.getElementById('f-newpwd').value;
+                    const npc = document.getElementById('f-newpwd-confirm').value;
+                    if (!np || np.length < 6) { showToast('New password must be at least 6 characters', 'warning'); return; }
+                    if (np !== npc) { showToast('New passwords do not match', 'warning'); return; }
+                    data.password = np;
+                }
+            }
+
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true; btn.classList.add('loading');
+            try {
+                if (id) {
+                    await adminAPI.updateCustomer(id, data);
+                    showToast(`${name} updated successfully`, 'success');
+                } else {
+                    await adminAPI.createCustomer(data);
+                    showToast(`${name} created! They can log in with ${email}`, 'success');
+                }
+                closeModal();
+                await loadUsers();
+            } catch (e) {
+                showToast(e.message, 'error');
+            } finally {
+                btn.disabled = false; btn.classList.remove('loading');
+            }
+        }
+
+        // ─── Ban / Unban ────────────────────────────────────────────
+        async function toggleBan(id, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'banned' : 'active';
+            const u = allUsers.find(x => x.id === id);
+            const action = newStatus === 'banned' ? 'ban' : 'unban';
+            if (!confirm(`Are you sure you want to ${action} ${u?.customer_name}?`)) return;
+            try {
+                await adminAPI.updateCustomer(id, { customer_status: newStatus });
+                showToast(`${u?.customer_name} ${action}ned`, newStatus === 'banned' ? 'info' : 'success');
+                await loadUsers();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // ─── Delete (soft) ──────────────────────────────────────────
+        async function deleteUser(id, name) {
+            if (!confirm(`Permanently remove "${name}"?\n\nThis will deactivate the account.`)) return;
+            try {
+                await adminAPI.deleteCustomer(id);
+                showToast(`"${name}" removed`, 'info');
+                await loadUsers();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // ─── View Details ────────────────────────────────────────────
+        function viewDetails(id) {
+            const u = allUsers.find(x => x.id === id);
+            if (!u) return;
+            document.getElementById('drawer-content').innerHTML = `
+        <div style="text-align:center;padding:1rem 0 1.5rem">
+            ${avatarHtml(u, 72)}
+            <div style="margin-top:.75rem;font-size:1.1rem;font-weight:800">${u.customer_name}</div>
+            <div style="color:var(--text-muted);font-size:.875rem">${u.customer_email}</div>
+            <div style="margin-top:.5rem;display:flex;gap:.5rem;justify-content:center">
+                ${roleBadge(u.role)} ${statusBadge(u.customer_status)}
+            </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:1rem">
+            ${row('fas fa-phone', 'Phone', u.customer_phone || 'Not provided')}
+            ${row('fas fa-map-marker-alt', 'Address', u.customer_address || 'Not provided')}
+            ${row('fas fa-calendar-alt', 'Joined', formatDate(u.created_date))}
+            ${row('fas fa-hashtag', 'User ID', '#' + u.id)}
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:1.25rem">
+            <button class="btn btn-ghost btn-sm" style="flex:1" onclick="closeDrawer();editUser(${u.id})">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="btn ${u.customer_status === 'banned' ? 'btn-primary' : 'btn-danger'} btn-sm" style="flex:1"
+                    onclick="closeDrawer();toggleBan(${u.id},'${u.customer_status}')">
+                <i class="fas ${u.customer_status === 'banned' ? 'fa-check-circle' : 'fa-ban'}"></i>
+                ${u.customer_status === 'banned' ? 'Unban' : 'Ban'}
+            </button>
+        </div>`;
+            document.getElementById('detail-drawer').classList.add('open');
+        }
+
+        function row(icon, label, value) {
+            return `<div style="display:flex;align-items:flex-start;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.875rem">
+        <i class="${icon}" style="color:var(--primary);width:16px;margin-top:.15rem;flex-shrink:0"></i>
+        <div><div style="font-weight:600">${label}</div><div style="color:var(--text-muted)">${value}</div></div>
+    </div>`;
+        }
+
+        function closeDrawer() { document.getElementById('detail-drawer').classList.remove('open'); }
+
+        // Close modals on overlay click
+        document.getElementById('user-modal').addEventListener('click', e => { if (e.target === document.getElementById('user-modal')) closeModal(); });
+        document.getElementById('detail-drawer').addEventListener('click', e => { if (e.target === document.getElementById('detail-drawer')) closeDrawer(); });
+    </script>
+    <script src="admin-shared.js"></script>
+</body>
+
+</html>

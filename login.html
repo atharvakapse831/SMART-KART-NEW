@@ -2,117 +2,270 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Smart KART</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — Smart KART</title>
+    <meta name="description" content="Sign in or create an account at Smart KART." />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .pw-strength-fill.weak {
+            width: 33%;
+            background: #EF4444;
+        }
+
+        .pw-strength-fill.medium {
+            width: 66%;
+            background: #F59E0B;
+        }
+
+        .pw-strength-fill.strong {
+            width: 100%;
+            background: var(--primary);
+        }
+
+        .auth-panel-left-content {
+            text-align: center;
+        }
+
+        .auth-panel-left-content .logo {
+            justify-content: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .auth-panel-left-content h2 {
+            font-size: 1.75rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .auth-panel-left-content p {
+            color: rgba(255, 255, 255, .8);
+            line-height: 1.7;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 2rem;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .6rem 0;
+            color: rgba(255, 255, 255, .9);
+            font-size: .9rem;
+        }
+
+        .feature-list li i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
-                    <i class="far fa-heart"></i>
-                    <span class="count-badge" id="wishlist-count">0</span>
-                </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="count-badge" id="cart-count">0</span>
-                </a>
-                <div id="user-info" class="user-menu"></div>
+    <div class="auth-page">
+        <!-- Left Panel -->
+        <div class="auth-panel-left">
+            <div class="auth-panel-left-content">
+                <div class="logo"><i class="fas fa-shopping-basket"></i> Smart<span style="color:#fff">KART</span></div>
+                <h2>Fresh. Fast. Affordable.</h2>
+                <p>Join thousands of happy customers who get their groceries delivered fresh to their door every day.
+                </p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Organic &amp; fresh produce</li>
+                    <li><i class="fas fa-check-circle"></i> 2-hour delivery guarantee</li>
+                    <li><i class="fas fa-check-circle"></i> Secure checkout</li>
+                    <li><i class="fas fa-check-circle"></i> Easy returns &amp; refunds</li>
+                    <li><i class="fas fa-check-circle"></i> Exclusive member discounts</li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+        <!-- Right Panel -->
+        <div class="auth-panel-right">
+            <div class="auth-box">
+                <h2 id="auth-title">Welcome Back</h2>
+                <p id="auth-sub">Sign in to your account</p>
+                <!-- Tab switcher -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+                    <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+                </div>
 
-    <div class="page-header">
-        <div class="container">
-            <h2>Welcome Back</h2>
-            <p>Login to access your account</p>
+                <!-- Login Form -->
+                <div class="auth-form active" id="form-login">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" type="email" id="login-email" placeholder="you@example.com" required
+                            autocomplete="email" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="password-field">
+                            <input class="form-control" type="password" id="login-pw" placeholder="Your password"
+                                required />
+                            <button class="show-pw" type="button" onclick="togglePW('login-pw',this)"><i
+                                    class="far fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end;margin-bottom:1.25rem">
+                        <a href="#" style="font-size:.8rem;color:var(--primary)">Forgot password?</a>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="login-btn" onclick="doLogin()"><i
+                            class="fas fa-sign-in-alt"></i> Sign In</button>
+                    <div class="divider">or</div>
+                    <button class="btn btn-ghost btn-block" onclick="switchTab('signup')">Create New Account</button>
+                </div>
+
+                <!-- Signup Form -->
+                <div class="auth-form" id="form-signup">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input class="form-control" type="text" id="reg-name" placeholder="Your full name" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" type="email" id="reg-email" placeholder="you@example.com" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone (optional)</label>
+                        <input class="form-control" type="tel" id="reg-phone" placeholder="+91 00000 00000" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="password-field">
+                            <input class="form-control" type="password" id="reg-pw" placeholder="Min. 6 characters"
+                                oninput="checkPwStrength(this.value)" />
+                            <button class="show-pw" type="button" onclick="togglePW('reg-pw',this)"><i
+                                    class="far fa-eye"></i></button>
+                        </div>
+                        <div class="pw-strength">
+                            <div class="pw-strength-bar">
+                                <div class="pw-strength-fill" id="pw-bar"></div>
+                            </div>
+                            <div class="pw-strength-text" id="pw-text"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="reg-btn" onclick="doSignup()"><i
+                            class="fas fa-user-plus"></i> Create Account</button>
+                    <div class="divider">or</div>
+                    <button class="btn btn-ghost btn-block" onclick="switchTab('login')">Already have an
+                        account?</button>
+                </div>
+
+                <p style="margin-top:2rem;text-align:center;font-size:.8rem;color:var(--text-muted)">
+                    By continuing you agree to our <a href="terms.html" style="color:var(--primary)">Terms</a> &amp; <a
+                        href="privacy.html" style="color:var(--primary)">Privacy Policy</a>.
+                </p>
+            </div>
         </div>
     </div>
 
-    <section class="container" style="margin-bottom: 4rem;">
-        <div class="card" style="max-width: 400px; margin: 0 auto; padding: 2.5rem;">
-            <h2 style="text-align: center; margin-bottom: 2rem;">Login</h2>
-            <form id="login-form" onsubmit="return validateLoginForm()">
-                <div class="mb-4">
-                    <label for="login-email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email
-                        Address</label>
-                    <input type="email" id="login-email" placeholder="Enter your email" required>
-                </div>
-                <div class="mb-4">
-                    <label for="login-password"
-                        style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-            </form>
-            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted);">
-                Don't have an account? <a href="signup.html" style="color: var(--primary-color); font-weight: 600;">Sign
-                    up</a>
-            </p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Customer Care</h4>
-                    <ul>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="returns.html">Returns & Refunds</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Load configuration first -->
-    <script src="config.js"></script>
-    <!-- Load API service layer -->
     <script src="api-service.js"></script>
-    <!-- Load main application script -->
-    <script src="script.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (Auth.isLoggedIn()) window.location.href = 'index.html';
+
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('form-' + tab).classList.add('active');
+            document.getElementById('auth-title').textContent = tab === 'login' ? 'Welcome Back' : 'Create Account';
+            document.getElementById('auth-sub').textContent = tab === 'login' ? 'Sign in to your account' : 'Join Smart KART today';
+        }
+
+        function togglePW(id, btn) {
+            const inp = document.getElementById(id);
+            const isText = inp.type === 'text';
+            inp.type = isText ? 'password' : 'text';
+            btn.querySelector('i').className = isText ? 'far fa-eye' : 'far fa-eye-slash';
+        }
+
+        function checkPwStrength(pw) {
+            const bar = document.getElementById('pw-bar');
+            const txt = document.getElementById('pw-text');
+            bar.className = 'pw-strength-fill';
+            if (pw.length < 1) { bar.style.width = '0'; txt.textContent = ''; return; }
+            if (pw.length < 6) { bar.classList.add('weak'); txt.textContent = 'Weak — min 6 characters'; txt.style.color = '#EF4444'; }
+            else if (pw.length < 10 || !/[0-9!@#$]/.test(pw)) { bar.classList.add('medium'); txt.textContent = 'Moderate'; txt.style.color = '#F59E0B'; }
+            else { bar.classList.add('strong'); txt.textContent = 'Strong 💪'; txt.style.color = 'var(--primary)'; }
+        }
+
+        function shakeForm(formId) {
+            const el = document.getElementById(formId);
+            el.classList.add('shake');
+            setTimeout(() => el.classList.remove('shake'), 500);
+        }
+
+        async function doLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const pw = document.getElementById('login-pw').value;
+            if (!email || !pw) { showToast('Please enter email and password', 'warning'); shakeForm('form-login'); return; }
+            const btn = document.getElementById('login-btn');
+            btn.classList.add('loading'); btn.textContent = 'Signing in...';
+            try {
+                const r = await authAPI.login(email, pw);
+                Auth.save(r);
+                showToast(`Welcome back, ${r.data.customer_name}! 🎉`, 'success');
+                const next = new URLSearchParams(window.location.search).get('next') || (Auth.isAdmin() ? 'admin/index.html' : 'index.html');
+                setTimeout(() => window.location.href = next, 800);
+            } catch (e) {
+                showToast(e.message, 'error');
+                shakeForm('form-login');
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+            }
+        }
+
+        async function doSignup() {
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const pw = document.getElementById('reg-pw').value;
+            const phone = document.getElementById('reg-phone').value.trim();
+
+            if (!name || !email || !pw) { showToast('Please fill all required fields', 'warning'); shakeForm('form-signup'); return; }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) { showToast('Please enter a valid email address', 'warning'); shakeForm('form-signup'); return; }
+
+            // Phone validation (exactly 10 digits)
+            if (phone) {
+                const phoneRegex = /^(?:\+?\d{1,3}[- ]?)?\d{10}$/;
+                if (!phoneRegex.test(phone)) { showToast('Please enter a valid 10-digit phone number', 'warning'); shakeForm('form-signup'); return; }
+            }
+
+            if (pw.length < 6) { showToast('Password must be at least 6 characters', 'warning'); shakeForm('form-signup'); return; }
+            const btn = document.getElementById('reg-btn');
+            btn.classList.add('loading'); btn.textContent = 'Creating account...';
+            try {
+                const r = await authAPI.signup({ customer_name: name, customer_email: email, customer_password: pw, customer_phone: phone });
+                Auth.save(r);
+                showToast(`Account created! Welcome, ${name}! 🎉`, 'success');
+                setTimeout(() => window.location.href = 'index.html', 800);
+            } catch (e) {
+                showToast(e.message, 'error');
+                shakeForm('form-signup');
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        }
+
+        // Allow Enter key
+        document.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                const activeForm = document.querySelector('.auth-form.active').id;
+                if (activeForm === 'form-login') doLogin();
+                else doSignup();
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 — Page Not Found | Smart KART</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-code {
+            font-size: clamp(6rem, 20vw, 10rem);
+            font-weight: 800;
+            line-height: 1;
+            color: var(--primary);
+            opacity: .15;
+        }
+
+        .error-content {
+            position: relative;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-12px)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-page">
+        <div class="error-content">
+            <div class="error-icon"><i class="fas fa-shopping-basket"></i></div>
+            <div class="error-code">404</div>
+            <h1 style="font-size:2rem;margin-bottom:1rem">Page Not Found</h1>
+            <p style="color:var(--text-muted);max-width:400px;margin:0 auto 2rem">Oops! Looks like this page went out of
+                stock. Let's get you back to something fresh.</p>
+            <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+                <a href="index.html" class="btn btn-primary"><i class="fas fa-home"></i> Go Home</a>
+                <a href="products.html" class="btn btn-ghost"><i class="fas fa-store"></i> Browse Products</a>
+            </div>
+        </div>
+    </div>
+    <script src="api-service.js"></script>
+</body>
+
+</html>

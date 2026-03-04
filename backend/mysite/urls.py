@@ -28,7 +28,7 @@ def serve_frontend(request, path='index.html'):
     return HttpResponse("File not found", status=404)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    re_path(r'^(?P<path>.*)$', serve_frontend),
+    path('django-admin/', admin.site.urls),  # Django built-in admin at /django-admin/
+    path('api/', include('api.urls')),        # REST API at /api/
+    re_path(r'^(?P<path>.*)$', serve_frontend),  # Catch-all: serves frontend files
 ]

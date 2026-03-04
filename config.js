@@ -1,7 +1,8 @@
 // Environment Configuration
 const ENV = {
     development: {
-        API_BASE_URL: 'http://localhost:3000/api',
+        // Keep relative to current origin so Django and frontend stay in sync during dev
+        API_BASE_URL: '/api',
         TIMEOUT: 10000, // 10 seconds
         RETRY_ATTEMPTS: 3,
         RETRY_DELAY: 1000, // 1 second

@@ -2,128 +2,183 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - Smart KART</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile — Smart KART</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
-                    <i class="far fa-heart"></i>
-                    <span class="count-badge" id="wishlist-count">0</span>
-                </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="count-badge" id="cart-count">0</span>
-                </a>
-                <div id="user-info" class="user-menu"></div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="page-header">
+    <header id="header">
         <div class="container">
-            <h2>My Profile</h2>
-            <p>Manage your account details</p>
+            <nav>
+                <a href="index.html" class="logo"><i class="fas fa-shopping-basket"></i> Smart<span>KART</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="profile.html" class="active">Profile</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="nav-icon" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <a class="nav-icon" href="cart.html"><i class="fas fa-shopping-cart"></i><span class="badge-dot"
+                            id="cart-count" style="display:none">0</span></a>
+                    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login">Login</a>
+                    <div id="nav-user" style="display:none;align-items:center;gap:.5rem">
+                        <span class="user-btn"><i class="fas fa-user-circle"></i> <span
+                                id="nav-username">Me</span></span>
+                        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <nav id="mobile-nav">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="orders.html"><i class="fas fa-box"></i> Orders</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a onclick="logout()" style="cursor:pointer"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+
+    <div class="container page-top">
+        <div id="profile-guard" style="display:none" class="empty-state">
+            <i class="fas fa-lock"></i>
+            <h3>Login Required</h3>
+            <a href="login.html" class="btn btn-primary" style="margin-top:1rem">Login</a>
+        </div>
+        <div id="profile-ui" style="display:none;max-width:640px;margin:0 auto">
+            <!-- Avatar + name header -->
+            <div class="card card-body" style="text-align:center;margin-bottom:2rem">
+                <div
+                    style="width:80px;height:80px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2rem;color:var(--primary)">
+                    <i class="fas fa-user-circle"></i></div>
+                <h2 id="pf-name">Loading...</h2>
+                <p style="color:var(--text-muted);font-size:.875rem" id="pf-email"></p>
+                <span class="badge badge-green" id="pf-role"></span>
+            </div>
+
+            <!-- Edit Profile -->
+            <div class="card card-body" style="margin-bottom:1.5rem">
+                <h3 style="margin-bottom:1.25rem"><i class="fas fa-user-edit" style="color:var(--primary)"></i> Edit
+                    Profile</h3>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input class="form-control" id="pf-edit-name" placeholder="Your full name" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input class="form-control" type="tel" id="pf-edit-phone" placeholder="Your phone number" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Address</label>
+                    <textarea class="form-control" id="pf-edit-addr" rows="2"
+                        placeholder="Your default delivery address"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save
+                    Changes</button>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card card-body" style="margin-bottom:1.5rem">
+                <h3 style="margin-bottom:1.25rem"><i class="fas fa-lock" style="color:var(--primary)"></i> Change
+                    Password</h3>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <div class="password-field">
+                        <input class="form-control" type="password" id="pf-pw" placeholder="Min. 6 characters" />
+                        <button class="show-pw" type="button" onclick="togglePW()"><i class="far fa-eye"></i></button>
+                    </div>
+                </div>
+                <button class="btn btn-outline" onclick="savePassword()"><i class="fas fa-key"></i> Update
+                    Password</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="card card-body">
+                <h3 style="margin-bottom:1.25rem"><i class="fas fa-chart-bar" style="color:var(--primary)"></i> Account
+                    Stats</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div style="padding:1rem;background:var(--bg-subtle);border-radius:var(--r-md);text-align:center">
+                        <div id="stat-orders" style="font-size:2rem;font-weight:800">—</div>
+                        <div style="font-size:.8rem;color:var(--text-muted)">Total Orders</div>
+                    </div>
+                    <div
+                        style="padding:1rem;background:var(--primary-light);border-radius:var(--r-md);text-align:center">
+                        <div id="stat-member" style="font-size:1rem;font-weight:700;color:var(--primary)">—</div>
+                        <div style="font-size:.8rem;color:var(--text-muted)">Member Since</div>
+                    </div>
+                </div>
+                <div style="margin-top:1.5rem">
+                    <a href="orders.html" class="btn btn-ghost btn-block"><i class="fas fa-box"></i> View My Orders</a>
+                </div>
+                <div style="margin-top:.75rem">
+                    <button class="btn btn-danger btn-block" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sign
+                        Out</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <section class="container" style="margin-bottom: 4rem;">
-        <div class="card"
-            style="padding: 2rem; max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
-            <div style="text-align: center;">
-                <img src="https://via.placeholder.com/150" alt="Profile"
-                    style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--primary-light);">
-                <button class="btn btn-outline btn-sm" style="margin-top: 1rem;">Change Photo</button>
-            </div>
-            <div>
-                <h3>Personal Information</h3>
-                <!-- Simple placeholder content as backend is mocked -->
-                <div style="margin-top: 1.5rem;">
-                    <p><strong>Name:</strong> <span id="profile-name">Loading...</span></p>
-                    <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
-                    <p><strong>Address:</strong> <span id="profile-address">Loading...</span></p>
-                </div>
-                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-                    <button class="btn btn-primary">Edit Profile</button>
-                    <a href="orders.html" class="btn btn-outline">My Orders</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-item"><i class="fas fa-home"></i>Home</a>
+        <a href="products.html" class="bottom-nav-item"><i class="fas fa-store"></i>Shop</a>
+        <a href="cart.html" class="bottom-nav-item"><i class="fas fa-shopping-cart"></i>Cart</a>
+        <a href="orders.html" class="bottom-nav-item"><i class="fas fa-box"></i>Orders</a>
+        <a href="profile.html" class="bottom-nav-item active"><i class="fas fa-user"></i>Profile</a>
+    </nav>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Customer Care</h4>
-                    <ul>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="returns.html">Returns & Refunds</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Load configuration first -->
-    <script src="config.js"></script>
-    <!-- Load API service layer -->
     <script src="api-service.js"></script>
-    <!-- Load main application script -->
-    <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            if (currentUser) {
-                document.getElementById('profile-name').textContent = currentUser.name;
-                document.getElementById('profile-email').textContent = currentUser.email;
-                document.getElementById('profile-address').textContent = currentUser.address;
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
+        function togglePW() {
+            const inp = document.getElementById('pf-pw');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+        }
+
+        async function initProfile() {
+            if (!Auth.isLoggedIn()) { document.getElementById('profile-guard').style.display = 'flex'; return; }
+            document.getElementById('profile-ui').style.display = 'block';
+            try {
+                const r = await authAPI.me();
+                const u = r.data;
+                document.getElementById('pf-name').textContent = u.customer_name;
+                document.getElementById('pf-email').textContent = u.customer_email;
+                document.getElementById('pf-role').textContent = u.role.charAt(0).toUpperCase() + u.role.slice(1);
+                document.getElementById('pf-edit-name').value = u.customer_name || '';
+                document.getElementById('pf-edit-phone').value = u.customer_phone || '';
+                document.getElementById('pf-edit-addr').value = u.customer_address || '';
+                document.getElementById('stat-member').textContent = formatDate(u.created_date);
+                // Load order count
+                ordersAPI.mine().then(r2 => {
+                    document.getElementById('stat-orders').textContent = (r2.data || []).length;
+                }).catch(() => { });
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function saveProfile() {
+            const name = document.getElementById('pf-edit-name').value.trim();
+            const phone = document.getElementById('pf-edit-phone').value.trim();
+            const addr = document.getElementById('pf-edit-addr').value.trim();
+            if (!name) { showToast('Name cannot be empty', 'warning'); return; }
+            try {
+                const r = await authAPI.update({ customer_name: name, customer_phone: phone, customer_address: addr });
+                Auth.save({ access_token: Auth.getToken(), refresh_token: Auth.getRefresh(), data: r.data });
+                showToast('Profile updated! ✅', 'success');
+                document.getElementById('pf-name').textContent = r.data.customer_name;
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function savePassword() {
+            const pw = document.getElementById('pf-pw').value;
+            if (pw.length < 6) { showToast('Password must be at least 6 characters', 'warning'); return; }
+            try {
+                await authAPI.update({ password: pw });
+                showToast('Password updated! 🔒', 'success');
+                document.getElementById('pf-pw').value = '';
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        initProfile();
     </script>
 </body>
 

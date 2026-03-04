@@ -5,13 +5,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Smart KART</title>
+    <meta name="description" content="Learn more about Smart KART and our mission">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .about-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.04);
+            padding: 3rem;
+            margin-bottom: 2rem;
+        }
+        .about-section h3 {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+        }
+        .about-section p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        .about-stat {
+            text-align: center;
+            padding: 2rem;
+            background: var(--primary-light);
+            border-radius: var(--radius-lg);
+        }
+        .about-stat h4 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+        .about-stat p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .about-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .about-feature {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--bg-cream);
+            border-radius: var(--radius-md);
+            transition: var(--transition-base);
+        }
+        .about-feature:hover {
+            transform: translateX(5px);
+            background: var(--primary-light);
+        }
+        .about-feature-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 50%;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .about-feature span {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+        .about-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+        .about-hero-image {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            height: 400px;
+        }
+        .about-hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .about-hero-content h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+        }
+        .about-hero-content p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 992px) {
+            .about-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .about-hero {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .about-hero-image {
+                height: 300px;
+            }
+        }
+        @media (max-width: 576px) {
+            .about-features {
+                grid-template-columns: 1fr;
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i>
+                <span>Smart KART</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="products.html">Products</a></li>
@@ -19,13 +153,15 @@
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
+                <a href="search.html" class="nav-icon-link" title="Search">
+                    <i class="fas fa-search"></i>
+                </a>
+                <a href="wishlist.html" class="nav-icon-link" title="Wishlist">
                     <i class="far fa-heart"></i>
                     <span class="count-badge" id="wishlist-count">0</span>
                 </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
+                <a href="cart.html" class="nav-icon-link" title="Shopping Cart">
+                    <i class="fas fa-shopping-bag"></i>
                     <span class="count-badge" id="cart-count">0</span>
                 </a>
                 <div id="user-info" class="user-menu"></div>
@@ -40,38 +176,68 @@
         </div>
     </div>
 
-    <section class="container" style="margin-bottom: 4rem;">
-        <div class="about-content"
-            style="max-width: 800px; margin: 0 auto; background: white; padding: 3rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);">
-            <div class="about-section" style="margin-bottom: 3rem;">
-                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-bottom: 1rem;">Our Story</h3>
-                <p style="margin-bottom: 1rem; color: var(--text-muted); line-height: 1.8;">Smart KART was founded with
-                    a simple mission: to bring fresh, high-quality groceries to your doorstep. We believe that everyone
-                    deserves access to fresh, healthy food options without having to leave their homes.</p>
-                <p style="color: var(--text-muted); line-height: 1.8;">Starting from a small local delivery service, we
-                    have grown into a trusted partner for thousands of households, ensuring that the best produce
-                    reaches your kitchen table.</p>
+    <section class="container" style="margin-bottom: 5rem;">
+        <div class="about-hero fade-in-up">
+            <div class="about-hero-content">
+                <span class="subtitle">Our Story</span>
+                <h2>Bringing Farm Freshness to Your Doorstep</h2>
+                <p>Smart KART was founded with a simple mission: to bring fresh, high-quality groceries to your doorstep. We believe that everyone deserves access to fresh, healthy food options without having to leave their homes.</p>
+                <p>Starting from a small local delivery service, we have grown into a trusted partner for thousands of households, ensuring that the best produce reaches your kitchen table every single day.</p>
+                <a href="products.html" class="btn btn-primary">Shop Now</a>
             </div>
-
-            <div class="about-section" style="margin-bottom: 3rem;">
-                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-bottom: 1rem;">Our Commitment</h3>
-                <p style="color: var(--text-muted); line-height: 1.8;">We work directly with local farmers and suppliers
-                    to ensure that our products are always fresh and of the highest quality. Our team carefully selects
-                    each item to meet our strict quality standards.</p>
+            <div class="about-hero-image">
+                <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Fresh vegetables">
             </div>
+        </div>
 
-            <div class="about-section">
-                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-bottom: 1rem;">Why Choose Us?</h3>
-                <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
-                            style="color: var(--secondary-color);"></i> Fresh products</li>
-                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
-                            style="color: var(--secondary-color);"></i> Competitive prices</li>
-                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
-                            style="color: var(--secondary-color);"></i> Fast delivery</li>
-                    <li style="display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-check-circle"
-                            style="color: var(--secondary-color);"></i> Customer support</li>
-                </ul>
+        <div class="about-grid">
+            <div class="about-stat fade-in-up stagger-1">
+                <h4>10K+</h4>
+                <p>Happy Customers</p>
+            </div>
+            <div class="about-stat fade-in-up stagger-2">
+                <h4>500+</h4>
+                <p>Organic Products</p>
+            </div>
+            <div class="about-stat fade-in-up stagger-3">
+                <h4>50+</h4>
+                <p>Local Farmers</p>
+            </div>
+            <div class="about-stat fade-in-up stagger-4">
+                <h4>98%</h4>
+                <p>Satisfaction Rate</p>
+            </div>
+        </div>
+
+        <div class="about-section fade-in-up" style="margin-top: 4rem;">
+            <h3>Our Commitment</h3>
+            <p>We work directly with local farmers and suppliers to ensure that our products are always fresh and of the highest quality. Our team carefully selects each item to meet our strict quality standards, from farm to your table.</p>
+            
+            <div class="about-features">
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <span>100% Organic Products</span>
+                </div>
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-truck-fast"></i>
+                    </div>
+                    <span>Same-Day Delivery</span>
+                </div>
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <span>Premium Quality</span>
+                </div>
+                <div class="about-feature">
+                    <div class="about-feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <span>24/7 Support</span>
+                </div>
             </div>
         </div>
     </section>
@@ -81,11 +247,12 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
+                    <p>Premium quality for a premium lifestyle. We bring the market to your home with the finest organic produce and essentials.</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -108,24 +275,34 @@
                 </div>
                 <div class="footer-links">
                     <h4>Newsletter</h4>
+                    <p style="color: rgba(255,255,255,0.6); margin-bottom: 1rem; font-size: 0.9rem;">Get updates on fresh arrivals and exclusive offers.</p>
                     <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
                         <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-paper-plane"></i></button>
                     </form>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
+                <p>&copy; 2024 Smart KART. All rights reserved. Crafted with <i class="fas fa-heart" style="color: var(--accent-color);"></i> for quality living.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Load configuration first -->
+    <div class="toast-container" id="toast-container"></div>
+
     <script src="config.js"></script>
-    <!-- Load API service layer -->
     <script src="api-service.js"></script>
-    <!-- Load main application script -->
     <script src="script.js"></script>
+    <script>
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 
 </html>

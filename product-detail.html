@@ -2,151 +2,394 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Detail - Smart KART</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product — Smart KART</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .pd-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding-top: calc(var(--nav-h)+2rem);
+        }
+
+        .pd-img {
+            border-radius: var(--r-xl);
+            overflow: hidden;
+            background: var(--bg-subtle);
+            aspect-ratio: 1;
+        }
+
+        .pd-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pd-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .pd-cat {
+            color: var(--primary);
+            font-size: .8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        .pd-title {
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .pd-rating {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            color: #F59E0B;
+            font-size: .875rem;
+        }
+
+        .pd-pricing {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+        }
+
+        .pd-price {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .pd-oldprice {
+            font-size: 1.2rem;
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .pd-badge-save {
+            background: var(--primary-light);
+            color: var(--primary-darker);
+            padding: .2rem .75rem;
+            border-radius: var(--r-full);
+            font-weight: 700;
+            font-size: .8rem;
+        }
+
+        .pd-desc {
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        .qty-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            background: var(--bg-subtle);
+            border-radius: var(--r-full);
+            overflow: hidden;
+            border: 1.5px solid var(--border);
+        }
+
+        .qty-selector button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .qty-selector button:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .qty-selector span {
+            padding: 0 1rem;
+            font-weight: 700;
+            font-size: 1rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .reviews-section {
+            margin-top: 4rem;
+        }
+
+        .review-card {
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            background: var(--bg-card);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: .5rem;
+        }
+
+        .review-name {
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .review-date {
+            font-size: .75rem;
+            color: var(--text-light);
+        }
+
+        .review-text {
+            color: var(--text-muted);
+            font-size: .875rem;
+            line-height: 1.6;
+        }
+
+        @media(max-width:768px) {
+            .pd-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html" class="active">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
-                    <i class="far fa-heart"></i>
-                    <span class="count-badge" id="wishlist-count">0</span>
-                </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="count-badge" id="cart-count">0</span>
-                </a>
-                <div id="user-info" class="user-menu"></div>
-            </div>
-        </nav>
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo"><i class="fas fa-shopping-basket"></i> Smart<span>KART</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html" class="active">Products</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="nav-icon" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <a class="nav-icon" href="cart.html"><i class="fas fa-shopping-cart"></i><span class="badge-dot"
+                            id="cart-count" style="display:none">0</span></a>
+                    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login">Login</a>
+                    <div id="nav-user" style="display:none;align-items:center;gap:.5rem">
+                        <span class="user-btn"><i class="fas fa-user-circle"></i> <span
+                                id="nav-username">Me</span></span>
+                        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                </div>
+            </nav>
+        </div>
     </header>
+    <nav id="mobile-nav">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="products.html"><i class="fas fa-store"></i> Products</a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+    </nav>
 
-    <div class="container" style="margin-top: 4rem; margin-bottom: 4rem;">
-        <div id="product-detail">
-            <!-- Product details loaded by JS -->
+    <div class="container">
+        <div class="pd-layout" id="product-detail">
+            <!-- skeleton -->
+            <div class="skeleton" style="aspect-ratio:1;border-radius:var(--r-xl)"></div>
+            <div style="padding-top:2rem">
+                <div class="skeleton" style="height:14px;width:30%;margin-bottom:1rem"></div>
+                <div class="skeleton" style="height:32px;margin-bottom:.5rem"></div>
+                <div class="skeleton" style="height:32px;width:80%;margin-bottom:1.5rem"></div>
+                <div class="skeleton" style="height:20px;width:50%;margin-bottom:1rem"></div>
+                <div class="skeleton" style="height:40px;margin-bottom:1rem"></div>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="reviews-section" id="reviews-section" style="display:none">
+            <div class="section-top" style="margin-bottom:1.5rem">
+                <h2 class="section-title" style="font-size:1.5rem">Customer Reviews</h2>
+                <button class="btn btn-outline btn-sm" id="write-review-btn" onclick="toggleReviewForm()">Write a
+                    Review</button>
+            </div>
+            <!-- Write Review Form (hidden by default) -->
+            <div id="review-form-box"
+                style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:2rem">
+                <h4 style="margin-bottom:1rem">Share Your Experience</h4>
+                <div class="form-group">
+                    <label class="form-label">Rating</label>
+                    <div id="star-picker" style="display:flex;gap:.25rem;font-size:1.5rem;color:#D1D5DB;cursor:pointer">
+                        <i class="far fa-star" data-r="1"></i><i class="far fa-star" data-r="2"></i><i
+                            class="far fa-star" data-r="3"></i><i class="far fa-star" data-r="4"></i><i
+                            class="far fa-star" data-r="5"></i>
+                    </div>
+                    <input type="hidden" id="review-rating" value="5" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Comment</label>
+                    <textarea class="form-control" id="review-comment" rows="3"
+                        placeholder="What did you think?"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+            </div>
+            <div id="reviews-list"></div>
+        </div>
+
+        <!-- Related Products -->
+        <div style="margin:4rem 0 2rem">
+            <div class="section-top" style="margin-bottom:1.5rem">
+                <h2 class="section-title" style="font-size:1.5rem">You Might Also Like</h2>
+            </div>
+            <div class="product-grid" id="related-grid"
+                style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"></div>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Customer Care</h4>
-                    <ul>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="returns.html">Returns & Refunds</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-item"><i class="fas fa-home"></i>Home</a>
+        <a href="products.html" class="bottom-nav-item active"><i class="fas fa-store"></i>Shop</a>
+        <a href="cart.html" class="bottom-nav-item"><i class="fas fa-shopping-cart"></i>Cart</a>
+        <a href="orders.html" class="bottom-nav-item"><i class="fas fa-box"></i>Orders</a>
+        <a href="profile.html" class="bottom-nav-item"><i class="fas fa-user"></i>Profile</a>
+    </nav>
 
-    <!-- Load configuration first -->
-    <script src="config.js"></script>
-    <!-- Load API service layer -->
     <script src="api-service.js"></script>
-    <!-- Load main application script -->
-    <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = parseInt(urlParams.get('id'));
-            const product = products.find(p => p.id === productId);
+        const productId = new URLSearchParams(window.location.search).get('id');
+        let qty = 1;
+        let reviewRating = 5;
 
-            if (!product) {
-                document.getElementById('product-detail').innerHTML = '<p style="text-align:center; padding: 2rem;">Product not found.</p>';
-                return;
+        function productCard(p) {
+            const eff = p.discount_price || p.product_price;
+            return `<div class="product-card">
+    <a href="product-detail.html?id=${p.id}"><div class="product-img-wrap"><img src="${p.product_image || ''}" alt="${p.product_name}" loading="lazy"/></div></a>
+    <div class="product-body">
+      <div class="product-cat">${p.category_name || ''}</div>
+      <div class="product-name"><a href="product-detail.html?id=${p.id}">${p.product_name}</a></div>
+      <div class="product-footer">
+        <span class="product-price">${formatPrice(eff)}</span>
+        <button class="product-add-btn" onclick="addToCart(${p.id},'${p.product_name}')"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        async function loadProduct() {
+            if (!productId) { document.getElementById('product-detail').innerHTML = '<p>No product specified.</p>'; return; }
+            try {
+                const r = await productsAPI.get(productId);
+                const p = r.data;
+                document.title = `${p.product_name} — Smart KART`;
+                const savePct = p.discount_price ? Math.round((p.product_price - p.discount_price) / p.product_price * 100) : 0;
+                const eff = p.discount_price || p.product_price;
+                document.getElementById('product-detail').innerHTML = `
+      <div class="pd-img"><img src="${p.product_image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80'}" alt="${p.product_name}" loading="lazy"/></div>
+      <div class="pd-meta">
+        <div>
+          <div class="pd-cat">${p.category_name || 'General'}</div>
+          <h1 class="pd-title">${p.product_name}</h1>
+          <div class="pd-rating">${renderStars(p.rating)} <span style="color:var(--text-muted)">${p.rating} (${p.review_count} reviews)</span></div>
+        </div>
+        <div class="pd-pricing">
+          <span class="pd-price">${formatPrice(eff)}</span>
+          ${p.discount_price ? `<span class="pd-oldprice">${formatPrice(p.product_price)}</span><span class="pd-badge-save">${savePct}% OFF</span>` : ''}
+        </div>
+        <p class="pd-desc">${p.product_description || 'Fresh and high quality product.'}</p>
+        <div style="font-size:.85rem;color:var(--text-muted)"><i class="fas fa-box" style="color:var(--primary)"></i> In Stock: <strong>${p.product_quantity} ${p.unit || 'units'}</strong></div>
+        ${p.expiry_date ? `<div style="font-size:.85rem;color:var(--text-muted)"><i class="fas fa-calendar-alt" style="color:var(--primary)"></i> Best Before: <strong>${formatDate(p.expiry_date)}</strong></div>` : ''}
+        <div class="qty-row">
+          <div class="qty-selector">
+            <button onclick="changeQty(-1)"><i class="fas fa-minus"></i></button>
+            <span id="qty-val">1</span>
+            <button onclick="changeQty(1)"><i class="fas fa-plus"></i></button>
+          </div>
+          <button class="btn btn-primary" style="flex:1" onclick="addToCart(${p.id},'${p.product_name}')"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+          <button class="btn btn-ghost" onclick="toggleWL(${p.id},'${p.product_name}')" title="Wishlist"><i class="fas fa-heart"></i></button>
+        </div>
+        <div style="display:flex;gap:1.5rem;font-size:.8rem;color:var(--text-muted);padding-top:.5rem">
+          ${p.tags ? p.tags.split(',').map(t => `<span><i class="fas fa-tag" style="color:var(--primary)"></i> ${t.trim()}</span>`).join('') : ''}
+        </div>
+      </div>`;
+
+                // Reviews
+                document.getElementById('reviews-section').style.display = 'block';
+                renderReviews(p.reviews || []);
+
+                // Related products
+                productsAPI.list({ category: p.category_name, page_size: 4 }).then(rr => {
+                    const related = (rr.data || []).filter(x => x.id != p.id).slice(0, 4);
+                    document.getElementById('related-grid').innerHTML = related.map(productCard).join('') || '<p style="color:var(--text-muted)">No related products.</p>';
+                }).catch(() => { });
+            } catch (e) {
+                document.getElementById('product-detail').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-circle"></i><h3>Product not found</h3><p>${e.message}</p></div>`;
             }
+        }
 
-            const productDetail = document.getElementById('product-detail');
-            productDetail.innerHTML = `
-                <div class="product-detail-layout">
-                    <div class="detail-image">
-                        <img src="${product.image}" alt="${product.name}">
-                    </div>
-                    <div class="detail-info">
-                        <span class="badge badge-new" style="margin-bottom: 1rem; display: inline-block;">${product.category}</span>
-                        <h1>${product.name}</h1>
-                        <div class="detail-meta">
-                            <span class="detail-price">$${product.price}</span>
-                            <span class="product-unit" style="font-size: 1.2rem;">/ ${product.unit}</span>
-                        </div>
-                        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem;">${product.description}</p>
-                        
-                        <div class="detail-actions">
-                            <div class="quantity-control">
-                                <button class="quantity-btn" onclick="decrementQty()">-</button>
-                                <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="${product.stock}">
-                                <button class="quantity-btn" onclick="incrementQty()">+</button>
-                            </div>
-                            <button class="btn btn-primary" onclick="addProductToCart(${product.id})">Add to Cart</button>
-                            <button class="btn btn-outline" onclick="addToWishlist(${product.id})"><i class="far fa-heart"></i></button>
-                        </div>
-                        <p style="margin-top: 1rem; color: #10B981; font-weight: 600;"><i class="fas fa-check-circle"></i> In Stock (${product.stock} available)</p>
-                    </div>
-                </div>
-            `;
+        function renderReviews(reviews) {
+            const el = document.getElementById('reviews-list');
+            el.innerHTML = reviews.length
+                ? reviews.map(r => `<div class="review-card">
+        <div class="review-header"><span class="review-name">${r.customer_name}</span><span class="review-date">${formatDate(r.created_date)}</span></div>
+        <div style="color:#F59E0B;margin-bottom:.5rem">${renderStars(r.rating)}</div>
+        <p class="review-text">${r.comment}</p>
+      </div>`).join('')
+                : '<div class="empty-state" style="padding:2rem"><i class="far fa-comment-dots"></i><h3>No reviews yet</h3><p>Be the first to review this product</p></div>';
+        }
+
+        function changeQty(d) { qty = Math.max(1, qty + d); document.getElementById('qty-val').textContent = qty; }
+
+        async function addToCart(id, name) {
+            if (!Auth.isLoggedIn()) { showToast('Please log in to add to cart', 'warning'); return; }
+            try { await cartAPI.add(id, qty); showToast(`${name} ×${qty} added to cart!`, 'success'); refreshCartCount(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+
+        function toggleWL(id, name) {
+            const items = JSON.parse(localStorage.getItem('sk_wishlist') || '[]');
+            const idx = items.indexOf(id);
+            if (idx >= 0) { items.splice(idx, 1); showToast(`${name} removed from wishlist`, 'info'); }
+            else { items.push(id); showToast(`${name} saved ❤️`, 'success'); }
+            localStorage.setItem('sk_wishlist', JSON.stringify(items));
+        }
+
+        function toggleReviewForm() {
+            if (!Auth.isLoggedIn()) { showToast('Please log in to write a review', 'warning'); return; }
+            const box = document.getElementById('review-form-box');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Star picker
+        document.getElementById('star-picker').querySelectorAll('i').forEach(star => {
+            star.addEventListener('click', () => {
+                reviewRating = parseInt(star.dataset.r);
+                document.getElementById('review-rating').value = reviewRating;
+                document.getElementById('star-picker').querySelectorAll('i').forEach((s, i) => {
+                    s.className = i < reviewRating ? 'fas fa-star' : 'far fa-star';
+                    s.style.color = i < reviewRating ? '#F59E0B' : '#D1D5DB';
+                });
+            });
         });
 
-        function incrementQty() {
-            const qty = document.getElementById('quantity');
-            if (qty.value < 99) qty.value = parseInt(qty.value) + 1;
+        async function submitReview() {
+            const comment = document.getElementById('review-comment').value.trim();
+            if (!comment) { showToast('Please write a comment', 'warning'); return; }
+            try {
+                await apiFetch(`/products/${productId}/reviews`, { method: 'POST', body: JSON.stringify({ rating: reviewRating, comment }) });
+                showToast('Review submitted! Thank you 🎉', 'success');
+                document.getElementById('review-form-box').style.display = 'none';
+                document.getElementById('review-comment').value = '';
+                loadProduct();
+            } catch (e) { showToast(e.message, 'error'); }
         }
 
-        function decrementQty() {
-            const qty = document.getElementById('quantity');
-            if (qty.value > 1) qty.value = parseInt(qty.value) - 1;
-        }
-
-        function addProductToCart(productId) {
-            const quantity = parseInt(document.getElementById('quantity').value);
-            // In a real app we'd pass quantity, but for now we loop as script.js addToCart increments by 1
-            for (let i = 0; i < quantity; i++) {
-                addToCart(productId);
-            }
-        }
+        loadProduct();
     </script>
 </body>
 

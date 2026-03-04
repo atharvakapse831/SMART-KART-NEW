@@ -2,104 +2,345 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Smart KART</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout — Smart KART</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 2rem;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        .address-card {
+            border: 2px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 1.25rem;
+            cursor: pointer;
+            margin-bottom: .75rem;
+            transition: var(--t);
+        }
+
+        .address-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .pm-option {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 1rem;
+            cursor: pointer;
+            margin-bottom: .75rem;
+            transition: var(--t);
+        }
+
+        .pm-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .pm-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--r-sm);
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        @media(max-width:900px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
-                    <i class="far fa-heart"></i>
-                    <span class="count-badge" id="wishlist-count">0</span>
-                </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="count-badge" id="cart-count">0</span>
-                </a>
-                <div id="user-info" class="user-menu"></div>
-            </div>
-        </nav>
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo"><i class="fas fa-shopping-basket"></i> Smart<span>KART</span></a>
+                <div class="nav-actions">
+                    <button class="nav-icon" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login">Login</a>
+                    <div id="nav-user" style="display:none;align-items:center;gap:.5rem">
+                        <span class="user-btn"><i class="fas fa-user-circle"></i> <span
+                                id="nav-username">Me</span></span>
+                    </div>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <div class="page-header">
-        <div class="container">
-            <h2>Checkout</h2>
-            <p>Complete your purchase</p>
+    <div class="container page-top">
+        <div id="auth-guard" style="display:none" class="empty-state">
+            <i class="fas fa-lock"></i>
+            <h3>Login Required</h3>
+            <p>Please login to checkout.</p>
+            <a href="login.html" class="btn btn-primary" style="margin-top:1rem">Login</a>
+        </div>
+
+        <div id="checkout-ui" style="display:none">
+            <h1 class="section-title" style="font-size:2rem;margin-bottom:2rem">Checkout</h1>
+            <!-- Steps -->
+            <div class="steps" style="margin-bottom:2.5rem">
+                <div class="step active" id="s1">
+                    <div class="step-num">1</div>
+                    <div class="step-label">Address</div>
+                </div>
+                <div class="step" id="s2">
+                    <div class="step-num">2</div>
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="step" id="s3">
+                    <div class="step-num">3</div>
+                    <div class="step-label">Confirm</div>
+                </div>
+            </div>
+
+            <div class="checkout-grid">
+                <div>
+                    <!-- Step 1: Address -->
+                    <div class="step-panel active" id="panel-1">
+                        <h3 style="margin-bottom:1.25rem">Delivery Address</h3>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input class="form-control" id="co-name" placeholder="Your full name" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input class="form-control" id="co-phone" placeholder="+91 00000 00000" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Delivery Address</label>
+                            <textarea class="form-control" id="co-address" rows="3"
+                                placeholder="Enter full address with pincode"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Preferred Delivery Date</label>
+                            <input class="form-control" type="date" id="co-date" />
+                        </div>
+                        <button class="btn btn-primary" onclick="goStep(2)">Continue to Payment <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- Step 2: Payment -->
+                    <div class="step-panel" id="panel-2">
+                        <h3 style="margin-bottom:1.25rem">Payment Method</h3>
+                        <div class="pm-option selected" id="pm-COD" onclick="selectPM('COD')">
+                            <div class="pm-icon">💵</div>
+                            <div>
+                                <div style="font-weight:700">Cash on Delivery</div>
+                                <div style="font-size:.8rem;color:var(--text-muted)">Pay when order arrives</div>
+                            </div>
+                        </div>
+                        <div class="pm-option" id="pm-Card" onclick="selectPM('Card')">
+                            <div class="pm-icon"><i class="fas fa-credit-card"></i></div>
+                            <div>
+                                <div style="font-weight:700">Credit / Debit Card</div>
+                                <div style="font-size:.8rem;color:var(--text-muted)">Secure card payment</div>
+                            </div>
+                        </div>
+                        <div class="pm-option" id="pm-UPI" onclick="selectPM('UPI')">
+                            <div class="pm-icon">📱</div>
+                            <div>
+                                <div style="font-weight:700">UPI</div>
+                                <div style="font-size:.8rem;color:var(--text-muted)">Pay via any UPI app</div>
+                            </div>
+                        </div>
+                        <div class="pm-option" id="pm-Wallet" onclick="selectPM('Wallet')">
+                            <div class="pm-icon">👛</div>
+                            <div>
+                                <div style="font-weight:700">Wallet</div>
+                                <div style="font-size:.8rem;color:var(--text-muted)">Pay from your balance</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:1.5rem;display:flex;gap:1rem">
+                            <button class="btn btn-ghost" onclick="goStep(1)"><i class="fas fa-arrow-left"></i>
+                                Back</button>
+                            <button class="btn btn-primary" onclick="goStep(3)">Review Order <i
+                                    class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Confirm -->
+                    <div class="step-panel" id="panel-3">
+                        <h3 style="margin-bottom:1.25rem">Order Summary</h3>
+                        <div class="card card-body" id="confirm-details"
+                            style="margin-bottom:1.5rem;font-size:.875rem;line-height:2"></div>
+                        <div id="cart-review" style="margin-bottom:1.5rem"></div>
+                        <div style="display:flex;gap:1rem">
+                            <button class="btn btn-ghost" onclick="goStep(2)"><i class="fas fa-arrow-left"></i>
+                                Back</button>
+                            <button class="btn btn-primary btn-lg" id="place-order-btn" onclick="placeOrder()"
+                                style="flex:1"><i class="fas fa-lock"></i> Place Order</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Success -->
+                    <div class="step-panel" id="panel-success">
+                        <div class="empty-state"
+                            style="padding:3rem;border:1px solid var(--border);border-radius:var(--r-xl);background:var(--bg-card)">
+                            <i class="fas fa-check-circle"
+                                style="font-size:4rem;color:var(--primary);margin-bottom:1rem"></i>
+                            <h2>Order Placed! 🎉</h2>
+                            <p>Your order has been confirmed and will be delivered soon.</p>
+                            <p style="margin-top:.5rem;font-weight:700" id="order-confirm-num"></p>
+                            <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center">
+                                <a href="orders.html" class="btn btn-primary">Track Order</a>
+                                <a href="products.html" class="btn btn-ghost">Continue Shopping</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary Sidebar -->
+                <div class="cart-summary" style="align-self:start">
+                    <h3>Price Breakdown</h3>
+                    <div class="summary-row"><span>Subtotal</span><span id="co-sub">₹0</span></div>
+                    <div class="summary-row discount" id="co-disc-row" style="display:none"><span>Discount</span><span
+                            id="co-disc"></span></div>
+                    <div class="summary-row"><span>Delivery</span><span>Free</span></div>
+                    <div class="summary-row total"><span>Total</span><span id="co-total">₹0</span></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <section class="container" style="margin-bottom: 4rem;">
-        <!-- Placeholder for checkout form if not standard implementation -->
-        <div class="card" style="padding: 2rem; max-width: 600px; margin: 0 auto; text-align: center;">
-            <h3>Ready to Order?</h3>
-            <p style="margin-bottom: 2rem;">Confirm your details below to finalize your order.</p>
-            <!-- In a real app, this would be a full form. Reusing script.js functionality which just uses alert for now -->
-            <button onclick="checkout()" class="btn btn-primary btn-lg">Place Order</button>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Customer Care</h4>
-                    <ul>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="returns.html">Returns & Refunds</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Load configuration first -->
-    <script src="config.js"></script>
-    <!-- Load API service layer -->
     <script src="api-service.js"></script>
-    <!-- Load main application script -->
-    <script src="script.js"></script>
+    <script>
+        let currentStep = 1;
+        let selectedPM = 'COD';
+        let cartItems = [];
+
+        function initCheckout() {
+            if (!Auth.isLoggedIn()) { document.getElementById('auth-guard').style.display = 'flex'; return; }
+            document.getElementById('checkout-ui').style.display = 'block';
+            const user = Auth.getUser();
+            if (user) {
+                document.getElementById('co-name').value = user.customer_name || '';
+                document.getElementById('co-phone').value = user.customer_phone || '';
+                document.getElementById('co-address').value = user.customer_address || '';
+            }
+            // Set min date
+            document.getElementById('co-date').min = new Date().toISOString().split('T')[0];
+            // Load summary totals
+            const sub = parseFloat(localStorage.getItem('sk_cart_sub') || 0);
+            const disc = parseFloat(localStorage.getItem('sk_cart_discount') || 0);
+            const total = parseFloat(localStorage.getItem('sk_cart_total') || 0);
+            document.getElementById('co-sub').textContent = formatPrice(sub);
+            document.getElementById('co-total').textContent = formatPrice(total || sub);
+            if (disc > 0) {
+                document.getElementById('co-disc-row').style.display = 'flex';
+                document.getElementById('co-disc').textContent = `- ${formatPrice(disc)}`;
+            }
+            loadCartItems();
+        }
+
+        async function loadCartItems() {
+            const r = await cartAPI.get().catch(() => ({ data: [] }));
+            cartItems = r.data || [];
+        }
+
+        function goStep(n) {
+            if (n > 1 && n !== currentStep) {
+                const name = document.getElementById('co-name').value.trim();
+                const addr = document.getElementById('co-address').value.trim();
+                if (!name || !addr) { showToast('Please fill in your name and address', 'warning'); return; }
+            }
+            document.getElementById(`s${currentStep}`).className = 'step done';
+            currentStep = n;
+            document.getElementById(`s${n}`) && (document.getElementById(`s${n}`).className = 'step active');
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${n}`).classList.add('active');
+            if (n === 3) buildConfirm();
+        }
+
+        function buildConfirm() {
+            const name = document.getElementById('co-name').value;
+            const addr = document.getElementById('co-address').value;
+            const date = document.getElementById('co-date').value;
+            const disc = parseFloat(localStorage.getItem('sk_cart_discount') || 0);
+            const coupon = localStorage.getItem('sk_coupon_code') || '';
+            document.getElementById('confirm-details').innerHTML = `
+    <b>Name:</b> ${name}<br/>
+    <b>Address:</b> ${addr}<br/>
+    <b>Payment:</b> ${selectedPM}<br/>
+    ${date ? `<b>Preferred Date:</b> ${formatDate(date)}<br/>` : ''}
+    ${coupon ? `<b>Coupon:</b> ${coupon}<br/>` : ''}
+    ${disc ? `<b>Discount:</b> - ${formatPrice(disc)}<br/>` : ''}
+  `;
+            document.getElementById('cart-review').innerHTML = cartItems.map(i => {
+                const eff = i.discount_price || i.product_price;
+                return `<div class="cart-item">
+      <img class="cart-item-img" src="${i.product_image || ''}" alt="${i.product_name}"/>
+      <div class="cart-item-info"><div class="cart-item-name">${i.product_name}</div><div class="cart-item-price">${formatPrice(eff)} × ${i.quantity}</div></div>
+      <strong>${formatPrice(parseFloat(eff) * i.quantity)}</strong>
+    </div>`;
+            }).join('') || '<p style="color:var(--text-muted)">No items.</p>';
+        }
+
+        function selectPM(pm) {
+            selectedPM = pm;
+            document.querySelectorAll('.pm-option').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`pm-${pm}`).classList.add('selected');
+        }
+
+        async function placeOrder() {
+            const btn = document.getElementById('place-order-btn');
+            btn.classList.add('loading'); btn.textContent = 'Placing Order...';
+            const addr = document.getElementById('co-address').value.trim();
+            const date = document.getElementById('co-date').value;
+            const coupon = localStorage.getItem('sk_coupon_code') || '';
+            const disc = parseFloat(localStorage.getItem('sk_cart_discount') || 0);
+            const sub = parseFloat(localStorage.getItem('sk_cart_sub') || 0);
+
+            const items = cartItems.map(i => ({
+                product_id: i.product,
+                quantity: i.quantity,
+                unit_price: parseFloat(i.discount_price || i.product_price)
+            }));
+            if (!items.length) { showToast('Your cart is empty', 'warning'); btn.classList.remove('loading'); btn.innerHTML = '<i class="fas fa-lock"></i> Place Order'; return; }
+
+            try {
+                const r = await ordersAPI.create({
+                    items, delivery_address: addr, payment_method: selectedPM,
+                    coupon_code: coupon, discount: disc, delivery_date: date || null
+                });
+                document.getElementById('order-confirm-num').textContent = `Order #${r.orderId} — Invoice: ${r.invoice}`;
+                // Clear cart total from LS
+                ['sk_cart_total', 'sk_cart_sub', 'sk_cart_discount', 'sk_coupon_code'].forEach(k => localStorage.removeItem(k));
+                // Show success panel
+                ['panel-1', 'panel-2', 'panel-3'].forEach(p => document.getElementById(p).classList.remove('active'));
+                document.getElementById('panel-success').classList.add('active');
+                document.querySelectorAll('.step').forEach(s => s.className = 'step done');
+                refreshCartCount();
+            } catch (e) {
+                showToast(e.message, 'error');
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+            }
+        }
+
+        initCheckout();
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Coupons — Admin | Smart KART</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="admin-shared.css" />
+</head>
+
+<body>
+    <div class="a-sidebar-overlay" id="a-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="a-sidebar" id="a-sidebar">
+        <div class="a-sidebar-logo">
+            <div class="a-sidebar-logo-icon"><i class="fas fa-shopping-basket"></i></div>
+            <div class="a-sidebar-logo-text">Smart<span>KART</span></div>
+        </div>
+        <nav class="a-sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="index.html" class="a-nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="analytics.html" class="a-nav-item"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <div class="nav-section">Catalogue</div>
+            <a href="products.html" class="a-nav-item"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.html" class="a-nav-item"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <div class="nav-section">People</div>
+            <a href="users.html" class="a-nav-item"><i class="fas fa-users"></i> Customers</a>
+            <a href="coupons.html" class="a-nav-item active"><i class="fas fa-tag"></i> Coupons</a>
+            <div class="nav-section">System</div>
+            <a href="../index.html" class="a-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+            <a href="#" class="a-nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="a-sidebar-footer">
+            <div class="a-sidebar-user">
+                <div class="a-sidebar-avatar" id="a-sb-avatar">A</div>
+                <div>
+                    <div class="a-sidebar-user-name" id="a-sb-name">Admin</div>
+                    <div class="a-sidebar-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- TOPBAR -->
+    <header class="a-topbar">
+        <button class="a-icon-btn a-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="a-topbar-search">
+            <i class="fas fa-search"></i>
+            <input id="coupon-search" placeholder="Search coupons…" oninput="filterCoupons()" />
+        </div>
+        <div class="a-topbar-right">
+            <div class="a-topbar-datetime">
+                <div class="a-topbar-date" id="a-tb-date"></div>
+                <div class="a-topbar-time" id="a-tb-time"></div>
+            </div>
+            <button class="a-icon-btn" id="a-theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="a-topbar-user">
+                <div class="a-topbar-user-av" id="a-tb-avatar">A</div>
+                <span class="a-topbar-user-name" id="a-tb-name">Admin</span>
+                <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted)"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="a-main">
+        <div class="a-content">
+            <div class="a-page-header">
+                <div>
+                    <div class="a-page-title"><i class="fas fa-tag"></i> Coupons</div>
+                    <div class="a-page-sub">Create and manage discount coupons</div>
+                </div>
+                <div class="a-page-actions">
+                    <button class="a-btn a-btn-primary" onclick="openModal()">
+                        <i class="fas fa-plus"></i> Add Coupon
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="a-stats-row"
+                style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:20px">
+                <div class="a-stat" style="--sc:#7c3aed">
+                    <div class="a-stat-icon"><i class="fas fa-tag"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-total">—</div>
+                        <div class="a-stat-lbl">Total Coupons</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#22c55e">
+                    <div class="a-stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-active">—</div>
+                        <div class="a-stat-lbl">Active</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#94a3b8">
+                    <div class="a-stat-icon"><i class="fas fa-pause-circle"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-inactive">—</div>
+                        <div class="a-stat-lbl">Inactive</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#ef4444">
+                    <div class="a-stat-icon"><i class="fas fa-calendar-times"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-expired">—</div>
+                        <div class="a-stat-lbl">Expired</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter tabs + search -->
+            <div class="a-filter-bar">
+                <div class="a-tabs">
+                    <button class="a-tab active" onclick="setTab(this,'all')">All<span class="a-tab-count"
+                            id="tc-all">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'active')"><i class="fas fa-check-circle"></i>
+                        Active<span class="a-tab-count" id="tc-active">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'inactive')"><i class="fas fa-pause-circle"></i>
+                        Inactive<span class="a-tab-count" id="tc-inactive">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'percent')"><i class="fas fa-percent"></i>
+                        Percentage<span class="a-tab-count" id="tc-percent">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'fixed')"><i class="fas fa-rupee-sign"></i> Fixed<span
+                            class="a-tab-count" id="tc-fixed">0</span></button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="a-table-wrap">
+                <table class="a-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Discount</th>
+                            <th>Min Order</th>
+                            <th>Used/Limit</th>
+                            <th>Expiry</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coupons-tbody">
+                        <tr>
+                            <td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i
+                                    class="fas fa-spinner fa-spin"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="coupon-footer" style="margin-top:10px;font-size:12px;color:var(--text-muted)"></div>
+        </div>
+    </main>
+
+    <!-- Coupon Modal -->
+    <div class="a-modal-overlay" id="coupon-modal">
+        <div class="a-modal">
+            <div class="a-modal-header">
+                <h3 id="modal-title">Add Coupon</h3>
+                <button class="a-modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="a-modal-body">
+                <input type="hidden" id="edit-id" />
+                <div class="a-form-group">
+                    <label class="a-form-label">Coupon Code *</label>
+                    <input class="a-form-control" id="f-code" placeholder="e.g. SAVE50"
+                        style="text-transform:uppercase;font-weight:700;letter-spacing:.05em" />
+                </div>
+                <div class="a-form-grid-2">
+                    <div class="a-form-group">
+                        <label class="a-form-label">Discount Type</label>
+                        <select class="a-form-control" id="f-type">
+                            <option value="percent">Percentage (%)</option>
+                            <option value="fixed">Fixed Amount (₹)</option>
+                        </select>
+                    </div>
+                    <div class="a-form-group">
+                        <label class="a-form-label">Discount Value *</label>
+                        <input class="a-form-control" type="number" id="f-value" step="0.01" placeholder="e.g. 10" />
+                    </div>
+                </div>
+                <div class="a-form-grid-2">
+                    <div class="a-form-group">
+                        <label class="a-form-label">Min Order Amount (₹)</label>
+                        <input class="a-form-control" type="number" id="f-min" value="0" />
+                    </div>
+                    <div class="a-form-group">
+                        <label class="a-form-label">Max Discount (₹) <small
+                                style="color:var(--text-muted)">(optional)</small></label>
+                        <input class="a-form-control" type="number" id="f-max" placeholder="No limit" />
+                    </div>
+                </div>
+                <div class="a-form-grid-2">
+                    <div class="a-form-group">
+                        <label class="a-form-label">Expiry Date</label>
+                        <input class="a-form-control" type="date" id="f-expiry" />
+                    </div>
+                    <div class="a-form-group">
+                        <label class="a-form-label">Usage Limit</label>
+                        <input class="a-form-control" type="number" id="f-limit" placeholder="Unlimited" />
+                    </div>
+                </div>
+                <div class="a-form-group" style="display:flex;align-items:center;gap:8px">
+                    <input type="checkbox" id="f-active" checked
+                        style="accent-color:var(--primary);width:16px;height:16px" />
+                    <label for="f-active" style="font-size:13px;font-weight:600">Active — coupon is usable by
+                        customers</label>
+                </div>
+            </div>
+            <div class="a-modal-footer">
+                <button class="a-btn a-btn-ghost a-btn-sm" onclick="closeModal()">Cancel</button>
+                <button class="a-btn a-btn-primary a-btn-sm" onclick="saveCoupon()"><i class="fas fa-save"></i> Save
+                    Coupon</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="a-toast-container"></div>
+    <script src="../api-service.js"></script>
+    <script src="admin-shared.js"></script>
+    <script>
+        let allCoupons = [], activeTab = 'all';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.isAdmin()) { window.location.href = '../login.html'; return; }
+            loadCoupons();
+        });
+
+        async function loadCoupons() {
+            const r = await adminAPI.coupons().catch(() => ({ data: [] }));
+            allCoupons = r.data || [];
+            updateStats();
+            updateTabCounts();
+            renderTable(filteredCoupons());
+        }
+
+        function isExpired(c) { return c.expiry_date && new Date(c.expiry_date) < new Date(); }
+
+        function filteredCoupons() {
+            const q = document.getElementById('coupon-search').value.toLowerCase();
+            return allCoupons.filter(c => {
+                const matchQ = !q || c.code.toLowerCase().includes(q);
+                if (activeTab === 'active') return matchQ && c.is_active && !isExpired(c);
+                if (activeTab === 'inactive') return matchQ && (!c.is_active || isExpired(c));
+                if (activeTab === 'percent') return matchQ && c.coupon_type === 'percent';
+                if (activeTab === 'fixed') return matchQ && c.coupon_type === 'fixed';
+                return matchQ;
+            });
+        }
+
+        function setTab(btn, tab) {
+            document.querySelectorAll('.a-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            activeTab = tab;
+            renderTable(filteredCoupons());
+        }
+        function filterCoupons() { renderTable(filteredCoupons()); }
+
+        function updateStats() {
+            const expired = allCoupons.filter(isExpired).length;
+            document.getElementById('st-total').textContent = allCoupons.length;
+            document.getElementById('st-active').textContent = allCoupons.filter(c => c.is_active && !isExpired(c)).length;
+            document.getElementById('st-inactive').textContent = allCoupons.filter(c => !c.is_active).length;
+            document.getElementById('st-expired').textContent = expired;
+        }
+        function updateTabCounts() {
+            document.getElementById('tc-all').textContent = allCoupons.length;
+            document.getElementById('tc-active').textContent = allCoupons.filter(c => c.is_active && !isExpired(c)).length;
+            document.getElementById('tc-inactive').textContent = allCoupons.filter(c => !c.is_active || isExpired(c)).length;
+            document.getElementById('tc-percent').textContent = allCoupons.filter(c => c.coupon_type === 'percent').length;
+            document.getElementById('tc-fixed').textContent = allCoupons.filter(c => c.coupon_type === 'fixed').length;
+        }
+
+        function renderTable(coupons) {
+            document.getElementById('coupon-footer').textContent = `Showing ${coupons.length} of ${allCoupons.length} coupons`;
+            const expired = c => isExpired(c);
+            document.getElementById('coupons-tbody').innerHTML = coupons.length
+                ? coupons.map(c => `<tr>
+    <td><code style="background:var(--accent-light);color:var(--accent);padding:3px 10px;border-radius:6px;font-weight:800;letter-spacing:.05em;font-size:12px">${c.code}</code></td>
+    <td><span class="a-badge ${c.coupon_type === 'percent' ? 'a-badge-purple' : 'a-badge-blue'}">${c.coupon_type === 'percent' ? '<i class="fas fa-percent"></i> Percentage' : '<i class="fas fa-rupee-sign"></i> Fixed'}</span></td>
+    <td style="font-weight:800;font-size:15px">${c.coupon_type === 'percent' ? c.value + '%' : '₹' + c.value}</td>
+    <td>₹${c.min_order_amount}</td>
+    <td>${c.used_count}${c.usage_limit ? '/' + c.usage_limit : ''}</td>
+    <td style="font-size:12px;color:${expired(c) ? '#ef4444' : 'var(--text-muted)'};font-weight:${expired(c) ? 700 : 400}">
+        ${c.expiry_date ? (expired(c) ? '<i class="fas fa-exclamation-circle"></i> ' : '') + formatDate(c.expiry_date) : 'No expiry'}
+    </td>
+    <td>
+        <span class="a-badge ${c.is_active && !expired(c) ? 'a-badge-green' : expired(c) ? 'a-badge-red' : 'a-badge-gray'}">
+            ${expired(c) ? 'Expired' : c.is_active ? 'Active' : 'Inactive'}
+        </span>
+    </td>
+    <td>
+        <div style="display:flex;gap:4px">
+            <button class="a-btn a-btn-ghost a-btn-xs" onclick="editCoupon(${c.id})"><i class="fas fa-edit"></i> Edit</button>
+            <button class="a-btn a-btn-danger a-btn-xs" onclick="deleteCoupon(${c.id},'${c.code}')"><i class="fas fa-trash"></i></button>
+        </div>
+    </td>
+  </tr>`).join('')
+                : `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-tag" style="font-size:2rem;display:block;margin-bottom:8px;color:var(--border)"></i>No coupons found.<br><button class="a-btn a-btn-primary a-btn-sm" style="margin-top:12px" onclick="openModal()">Create First Coupon</button></td></tr>`;
+        }
+
+        function openModal(c = null) {
+            document.getElementById('modal-title').textContent = c ? 'Edit Coupon — ' + c.code : 'Add New Coupon';
+            document.getElementById('edit-id').value = c?.id || '';
+            document.getElementById('f-code').value = c?.code || '';
+            document.getElementById('f-type').value = c?.coupon_type || 'percent';
+            document.getElementById('f-value').value = c?.value || '';
+            document.getElementById('f-min').value = c?.min_order_amount || 0;
+            document.getElementById('f-max').value = c?.max_discount || '';
+            document.getElementById('f-expiry').value = c?.expiry_date || '';
+            document.getElementById('f-limit').value = c?.usage_limit || '';
+            document.getElementById('f-active').checked = c ? c.is_active : true;
+            document.getElementById('coupon-modal').classList.add('open');
+            setTimeout(() => document.getElementById('f-code').focus(), 100);
+        }
+        function closeModal() { document.getElementById('coupon-modal').classList.remove('open'); }
+        function editCoupon(id) { openModal(allCoupons.find(x => x.id === id)); }
+
+        async function saveCoupon() {
+            const id = document.getElementById('edit-id').value;
+            const data = {
+                code: document.getElementById('f-code').value.trim().toUpperCase(),
+                coupon_type: document.getElementById('f-type').value,
+                value: document.getElementById('f-value').value,
+                min_order_amount: document.getElementById('f-min').value || 0,
+                max_discount: document.getElementById('f-max').value || null,
+                expiry_date: document.getElementById('f-expiry').value || null,
+                usage_limit: document.getElementById('f-limit').value || null,
+                is_active: document.getElementById('f-active').checked,
+            };
+            if (!data.code) { showToast('Coupon code is required', 'warning'); return; }
+            if (!data.value) { showToast('Discount value is required', 'warning'); return; }
+            try {
+                if (id) await adminAPI.updateCoupon(id, data);
+                else await adminAPI.createCoupon(data);
+                showToast(id ? 'Coupon updated!' : 'Coupon "' + data.code + '" created!', 'success');
+                closeModal(); loadCoupons();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function deleteCoupon(id, code) {
+            if (!confirm(`Delete coupon "${code}"?`)) return;
+            try { await adminAPI.deleteCoupon(id); showToast('Coupon deleted', 'info'); loadCoupons(); }
+            catch (e) { showToast(e.message, 'error'); }
+        }
+    </script>
+</body>
+
+</html>

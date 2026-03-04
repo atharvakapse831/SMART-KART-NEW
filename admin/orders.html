@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Orders — Admin | Smart KART</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="admin-shared.css" />
+</head>
+
+<body>
+    <div class="a-sidebar-overlay" id="a-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="a-sidebar" id="a-sidebar">
+        <div class="a-sidebar-logo">
+            <div class="a-sidebar-logo-icon"><i class="fas fa-shopping-basket"></i></div>
+            <div class="a-sidebar-logo-text">Smart<span>KART</span></div>
+        </div>
+        <nav class="a-sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="index.html" class="a-nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="analytics.html" class="a-nav-item"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <div class="nav-section">Catalogue</div>
+            <a href="products.html" class="a-nav-item"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.html" class="a-nav-item active"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <div class="nav-section">People</div>
+            <a href="users.html" class="a-nav-item"><i class="fas fa-users"></i> Customers</a>
+            <a href="coupons.html" class="a-nav-item"><i class="fas fa-tag"></i> Coupons</a>
+            <div class="nav-section">System</div>
+            <a href="../index.html" class="a-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+            <a href="#" class="a-nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="a-sidebar-footer">
+            <div class="a-sidebar-user">
+                <div class="a-sidebar-avatar" id="a-sb-avatar">A</div>
+                <div>
+                    <div class="a-sidebar-user-name" id="a-sb-name">Admin</div>
+                    <div class="a-sidebar-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- TOPBAR -->
+    <header class="a-topbar">
+        <button class="a-icon-btn a-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="a-topbar-search">
+            <i class="fas fa-search"></i>
+            <input id="order-search" placeholder="Search by customer or order #…" oninput="filterOrders()" />
+        </div>
+        <div class="a-topbar-right">
+            <div class="a-topbar-datetime">
+                <div class="a-topbar-date" id="a-tb-date"></div>
+                <div class="a-topbar-time" id="a-tb-time"></div>
+            </div>
+            <button class="a-icon-btn" id="a-theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="a-topbar-user" onclick="window.location='users.html'">
+                <div class="a-topbar-user-av" id="a-tb-avatar">A</div>
+                <span class="a-topbar-user-name" id="a-tb-name">Admin</span>
+                <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted)"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="a-main">
+        <div class="a-content">
+            <div class="a-page-header">
+                <div>
+                    <div class="a-page-title"><i class="fas fa-shopping-bag"></i> Orders</div>
+                    <div class="a-page-sub">Manage and update customer orders</div>
+                </div>
+                <div class="a-page-actions">
+                    <span id="orders-count-badge" class="a-badge a-badge-purple">Loading…</span>
+                    <a href="analytics.html" class="a-btn a-btn-ghost a-btn-sm"><i class="fas fa-chart-bar"></i>
+                        Analytics</a>
+                </div>
+            </div>
+
+            <!-- Stats row -->
+            <div class="a-stats-row" id="order-stats">
+                <div class="a-stat" style="--sc:#f59e0b">
+                    <div class="a-stat-icon"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-pending">—</div>
+                        <div class="a-stat-lbl">Pending</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#3b82f6">
+                    <div class="a-stat-icon"><i class="fas fa-cog"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-processing">—</div>
+                        <div class="a-stat-lbl">Processing</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#8b5cf6">
+                    <div class="a-stat-icon"><i class="fas fa-truck"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-shipped">—</div>
+                        <div class="a-stat-lbl">Shipped</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#22c55e">
+                    <div class="a-stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-delivered">—</div>
+                        <div class="a-stat-lbl">Delivered</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#ef4444">
+                    <div class="a-stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-cancelled">—</div>
+                        <div class="a-stat-lbl">Cancelled</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter bar -->
+            <div class="a-filter-bar">
+                <div class="a-tabs" id="status-tabs">
+                    <button class="a-tab active" onclick="setTab(this,'')">All<span class="a-tab-count"
+                            id="tc-all">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'Pending')"><i class="fas fa-clock"></i> Pending<span
+                            class="a-tab-count" id="tc-pending">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'Processing')"><i class="fas fa-cog"></i> Processing<span
+                            class="a-tab-count" id="tc-processing">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'Shipped')"><i class="fas fa-truck"></i> Shipped<span
+                            class="a-tab-count" id="tc-shipped">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'Delivered')"><i class="fas fa-check-circle"></i>
+                        Delivered<span class="a-tab-count" id="tc-delivered">0</span></button>
+                    <button class="a-tab" onclick="setTab(this,'Cancelled')"><i class="fas fa-times-circle"></i>
+                        Cancelled<span class="a-tab-count" id="tc-cancelled">0</span></button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="a-table-wrap">
+                <table class="a-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody">
+                        <tr>
+                            <td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i
+                                    class="fas fa-spinner fa-spin"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="orders-footer" style="margin-top:10px;font-size:12px;color:var(--text-muted)"></div>
+        </div>
+    </main>
+
+    <!-- Update Status Modal -->
+    <div class="a-modal-overlay" id="status-modal">
+        <div class="a-modal sm">
+            <div class="a-modal-header">
+                <h3>Update Order #<span id="modal-order-id"></span></h3>
+                <button class="a-modal-close" onclick="closeStatusModal()">×</button>
+            </div>
+            <div class="a-modal-body">
+                <div class="a-form-group">
+                    <label class="a-form-label">Order Status</label>
+                    <select class="a-form-control" id="new-order-status">
+                        <option>Pending</option>
+                        <option>Processing</option>
+                        <option>Shipped</option>
+                        <option>Delivered</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+                <div class="a-form-group">
+                    <label class="a-form-label">Payment Status</label>
+                    <select class="a-form-control" id="new-payment-status">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                        <option>Failed</option>
+                        <option>Refunded</option>
+                    </select>
+                </div>
+                <div class="a-form-group">
+                    <label class="a-form-label">Delivery Status</label>
+                    <select class="a-form-control" id="new-delivery-status">
+                        <option>Pending</option>
+                        <option>Dispatched</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option>Delivered</option>
+                    </select>
+                </div>
+            </div>
+            <div class="a-modal-footer">
+                <button class="a-btn a-btn-ghost a-btn-sm" onclick="closeStatusModal()">Cancel</button>
+                <button class="a-btn a-btn-primary a-btn-sm" onclick="updateOrder()"><i class="fas fa-save"></i>
+                    Update</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="a-toast-container"></div>
+    <script src="../api-service.js"></script>
+    <script src="admin-shared.js"></script>
+    <script>
+        const SC = { Delivered: '#22c55e', Processing: '#3b82f6', Pending: '#f59e0b', Shipped: '#8b5cf6', Cancelled: '#ef4444' };
+        const SB = { Delivered: 'green', Processing: 'blue', Pending: 'yellow', Shipped: 'purple', Cancelled: 'red' };
+        let allOrders = [], editingOrderId = null, activeTab = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!Auth.isAdmin()) { window.location.href = '../login.html'; return; }
+            loadOrders();
+        });
+
+        async function loadOrders() {
+            document.getElementById('orders-tbody').innerHTML =
+                `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i></td></tr>`;
+            const r = await adminAPI.orders({}).catch(() => ({ data: [] }));
+            allOrders = r.data || [];
+            updateStats();
+            updateTabCounts();
+            renderOrders(filteredOrders());
+        }
+
+        function filteredOrders() {
+            const q = document.getElementById('order-search').value.toLowerCase();
+            return allOrders.filter(o => {
+                const matchTab = !activeTab || o.order_status === activeTab;
+                const matchQ = !q || (o.customer_name || '').toLowerCase().includes(q) || String(o.id).includes(q);
+                return matchTab && matchQ;
+            });
+        }
+
+        function setTab(btn, tab) {
+            document.querySelectorAll('.a-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            activeTab = tab;
+            renderOrders(filteredOrders());
+        }
+        function filterOrders() { renderOrders(filteredOrders()); }
+
+        function updateStats() {
+            ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].forEach(s => {
+                const el = document.getElementById('st-' + s.toLowerCase());
+                if (el) el.textContent = allOrders.filter(o => o.order_status === s).length;
+            });
+            document.getElementById('orders-count-badge').textContent = allOrders.length + ' total orders';
+        }
+        function updateTabCounts() {
+            document.getElementById('tc-all').textContent = allOrders.length;
+            ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].forEach(s => {
+                const el = document.getElementById('tc-' + s.toLowerCase());
+                if (el) el.textContent = allOrders.filter(o => o.order_status === s).length;
+            });
+        }
+
+        function renderOrders(orders) {
+            document.getElementById('orders-footer').textContent = `Showing ${orders.length} of ${allOrders.length} orders`;
+            document.getElementById('orders-tbody').innerHTML = orders.length
+                ? orders.map(o => `<tr>
+    <td><span style="font-weight:800;color:var(--accent)">#${o.id}</span></td>
+    <td><div style="font-weight:600">${o.customer_name || '—'}</div><div style="font-size:11px;color:var(--text-muted)">${o.customer_email || ''}</div></td>
+    <td>${(o.order_items || []).length} items</td>
+    <td style="font-weight:800">₹${parseFloat(o.order_total_amount || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</td>
+    <td><span class="a-badge a-badge-gray">${o.payment?.payment_method || 'COD'}</span></td>
+    <td><span class="a-badge a-badge-${SB[o.order_status] || 'gray'}">${o.order_status}</span></td>
+    <td style="font-size:12px;color:var(--text-muted)">${formatDate(o.created_date)}</td>
+    <td><button class="a-btn a-btn-ghost a-btn-xs" onclick="openStatusModal(${o.id},'${o.order_status}','${o.payment?.payment_status || 'Pending'}','${o.delivery?.delivery_status || 'Pending'}')"><i class="fas fa-edit"></i> Update</button></td>
+  </tr>`).join('')
+                : `<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--text-muted)"><i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:8px"></i>No orders found</td></tr>`;
+        }
+
+        function openStatusModal(id, os, ps, ds) {
+            editingOrderId = id;
+            document.getElementById('modal-order-id').textContent = id;
+            document.getElementById('new-order-status').value = os;
+            document.getElementById('new-payment-status').value = ps;
+            document.getElementById('new-delivery-status').value = ds;
+            document.getElementById('status-modal').classList.add('open');
+        }
+        function closeStatusModal() { document.getElementById('status-modal').classList.remove('open'); }
+
+        async function updateOrder() {
+            try {
+                await adminAPI.updateOrder(editingOrderId, {
+                    order_status: document.getElementById('new-order-status').value,
+                    payment_status: document.getElementById('new-payment-status').value,
+                    delivery_status: document.getElementById('new-delivery-status').value,
+                });
+                showToast('Order #' + editingOrderId + ' updated!', 'success');
+                closeStatusModal(); loadOrders();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+    </script>
+</body>
+
+</html>

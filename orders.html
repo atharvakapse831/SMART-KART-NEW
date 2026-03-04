@@ -2,100 +2,222 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Orders - Smart KART</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Orders — Smart KART</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .order-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .order-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: .75rem;
+        }
+
+        .order-items-list {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .order-item-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: .75rem;
+        }
+
+        .order-item-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-item-img {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--r-md);
+            object-fit: cover;
+            background: var(--bg-subtle);
+            flex-shrink: 0;
+        }
+
+        .order-footer {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: .75rem;
+        }
+
+        .status-badge {
+            padding: .3rem .9rem;
+            border-radius: var(--r-full);
+            font-size: .75rem;
+            font-weight: 700;
+        }
+
+        .status-Processing {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+
+        .status-Pending {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-Shipped {
+            background: #E0E7FF;
+            color: #4338CA;
+        }
+
+        .status-Delivered {
+            background: var(--primary-light);
+            color: var(--primary-darker);
+        }
+
+        .status-Cancelled {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <nav class="container">
-            <a href="index.html" class="logo"><i class="fas fa-leaf"></i>Smart KART</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <div class="nav-icons">
-                <a href="search.html" class="nav-icon-link"><i class="fas fa-search"></i></a>
-                <a href="wishlist.html" class="nav-icon-link">
-                    <i class="far fa-heart"></i>
-                    <span class="count-badge" id="wishlist-count">0</span>
-                </a>
-                <a href="cart.html" class="nav-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="count-badge" id="cart-count">0</span>
-                </a>
-                <div id="user-info" class="user-menu"></div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="page-header">
+    <header id="header">
         <div class="container">
-            <h2>Order History</h2>
-            <p>Track your past purchases</p>
+            <nav>
+                <a href="index.html" class="logo"><i class="fas fa-shopping-basket"></i> Smart<span>KART</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="orders.html" class="active">Orders</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="nav-icon" id="theme-toggle"><i class="fas fa-moon"></i></button>
+                    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login">Login</a>
+                    <div id="nav-user" style="display:none;align-items:center;gap:.5rem">
+                        <span class="user-btn"><i class="fas fa-user-circle"></i> <span
+                                id="nav-username">Me</span></span>
+                        <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+                    </div>
+                    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                </div>
+            </nav>
         </div>
+    </header>
+    <nav id="mobile-nav">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="products.html"><i class="fas fa-store"></i> Products</a>
+        <a href="orders.html"><i class="fas fa-box"></i> Orders</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+    </nav>
+
+    <div class="container page-top">
+        <div class="section-top" style="margin-bottom:2rem">
+            <h1 class="section-title" style="font-size:2rem"><i class="fas fa-box" style="color:var(--primary)"></i> My
+                Orders</h1>
+        </div>
+        <div id="orders-guard" style="display:none" class="empty-state">
+            <i class="fas fa-lock"></i>
+            <h3>Please Login</h3>
+            <p>Login to see your order history.</p>
+            <a href="login.html" class="btn btn-primary" style="margin-top:1rem">Login</a>
+        </div>
+        <div id="orders-list"></div>
     </div>
 
-    <section class="container" style="margin-bottom: 4rem;">
-        <div id="orders-list">
-            <!-- Orders will be loaded here -->
-        </div>
-    </section>
+    <nav class="bottom-nav">
+        <a href="index.html" class="bottom-nav-item"><i class="fas fa-home"></i>Home</a>
+        <a href="products.html" class="bottom-nav-item"><i class="fas fa-store"></i>Shop</a>
+        <a href="cart.html" class="bottom-nav-item"><i class="fas fa-shopping-cart"></i>Cart</a>
+        <a href="orders.html" class="bottom-nav-item active"><i class="fas fa-box"></i>Orders</a>
+        <a href="profile.html" class="bottom-nav-item"><i class="fas fa-user"></i>Profile</a>
+    </nav>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3><i class="fas fa-leaf"></i> Smart KART</h3>
-                    <p>Premium quality for a premium lifestyle. We bring the market to your home.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="products.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Customer Care</h4>
-                    <ul>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="returns.html">Returns & Refunds</a></li>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Newsletter</h4>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email address" required>
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Smart KART. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Load configuration first -->
-    <script src="config.js"></script>
-    <!-- Load API service layer -->
     <script src="api-service.js"></script>
-    <!-- Load main application script -->
-    <script src="script.js"></script>
+    <script>
+        const TIMELINE = ['Pending', 'Processing', 'Shipped', 'Delivered'];
+
+        function statusClass(s) { return 'status-badge status-' + s; }
+
+        function orderHTML(o) {
+            const items = o.order_items || [];
+            const payment = o.payment || {};
+            const delivery = o.delivery || {};
+            const step = TIMELINE.indexOf(o.order_status);
+            return `<div class="order-card">
+    <div class="order-header">
+      <div>
+        <div style="font-weight:700">Order #${o.id}</div>
+        <div style="font-size:.8rem;color:var(--text-muted)">${formatDate(o.created_date)}</div>
+      </div>
+      <span class="${statusClass(o.order_status)}">${o.order_status}</span>
+      <div style="text-align:right">
+        <div style="font-weight:800;font-size:1.1rem">${formatPrice(o.order_total_amount)}</div>
+        <div style="font-size:.75rem;color:var(--text-muted)">${payment.payment_method || 'COD'} · ${payment.payment_status || ''}</div>
+      </div>
+    </div>
+    <!-- Items -->
+    <div class="order-items-list">
+      ${items.slice(0, 3).map(i => `<div class="order-item-row">
+        <img class="order-item-img" src="${i.product_image || ''}" alt="${i.product_name}"/>
+        <div style="flex:1"><div style="font-weight:600;font-size:.9rem">${i.product_name}</div><div style="font-size:.8rem;color:var(--text-muted)">${formatPrice(i.unit_price)} × ${i.quantity}</div></div>
+        <div style="font-weight:700">${formatPrice(parseFloat(i.unit_price) * i.quantity)}</div>
+      </div>`).join('')}
+      ${items.length > 3 ? `<div style="font-size:.8rem;color:var(--text-muted)">+${items.length - 3} more items</div>` : ''}
+    </div>
+    <!-- Timeline -->
+    ${o.order_status !== 'Cancelled' ? `
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:0">
+        ${TIMELINE.map((s, i) => `
+          <div style="flex:1;text-align:center;position:relative">
+            <div style="width:28px;height:28px;border-radius:50%;background:${i <= step ? 'var(--primary)' : 'var(--bg-subtle)'};border:2px solid ${i <= step ? 'var(--primary)' : 'var(--border)'};color:${i <= step ? '#fff' : 'var(--text-muted)'};display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:.75rem;font-weight:700;z-index:1;position:relative">${i < step ? '✓' : i + 1}</div>
+            <div style="font-size:.7rem;margin-top:.4rem;color:${i <= step ? 'var(--primary)' : 'var(--text-muted)'};font-weight:${i <= step ? '700' : '400'}">${s}</div>
+            ${i < TIMELINE.length - 1 ? `<div style="position:absolute;top:14px;left:50%;right:-50%;height:2px;background:${i < step ? 'var(--primary)' : 'var(--border)'}"></div>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+    <div class="order-footer">
+      <div style="font-size:.8rem;color:var(--text-muted)">
+        ${delivery.delivery_address ? `<i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> ${delivery.delivery_address.substring(0, 60)}${delivery.delivery_address.length > 60 ? '...' : ''}` : ''}
+      </div>
+      <div style="display:flex;gap:.5rem">
+        ${payment.payment_invoice ? `<span class="badge badge-gray">${payment.payment_invoice}</span>` : ''}
+        <a href="products.html" class="btn btn-ghost btn-sm">Buy Again</a>
+      </div>
+    </div>
+  </div>`;
+        }
+
+        async function loadOrders() {
+            if (!Auth.isLoggedIn()) { document.getElementById('orders-guard').style.display = 'flex'; return; }
+            document.getElementById('orders-list').innerHTML = '<div class="skeleton-card" style="height:200px;margin-bottom:1rem"></div><div class="skeleton-card" style="height:200px"></div>';
+            try {
+                const r = await ordersAPI.mine();
+                const orders = r.data || [];
+                document.getElementById('orders-list').innerHTML = orders.length
+                    ? orders.map(orderHTML).join('')
+                    : '<div class="empty-state"><i class="fas fa-box-open"></i><h3>No orders yet</h3><p>Shop now and your orders will appear here.</p><a href="products.html" class="btn btn-primary" style="margin-top:1rem">Browse Products</a></div>';
+            } catch (e) {
+                document.getElementById('orders-list').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Error loading orders</h3><p>${e.message}</p></div>`;
+            }
+        }
+
+        loadOrders();
+    </script>
 </body>
 
 </html>

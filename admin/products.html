@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products — Admin | Smart KART</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="admin-shared.css" />
+    <style>
+        /* ── Status filter tabs ── */
+        .filter-tabs {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .filter-tab {
+            padding: .4rem 1rem;
+            border-radius: var(--r-full);
+            font-size: .8rem;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .filter-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .filter-tab .tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, .25);
+            border-radius: 999px;
+            width: 18px;
+            height: 18px;
+            font-size: .7rem;
+            margin-left: .35rem;
+        }
+
+        .filter-tab:not(.active) .tab-count {
+            background: var(--bg-subtle);
+            color: var(--text-muted);
+        }
+
+        /* ── Row highlight for low stock ── */
+        tr.low-stock td {
+            background: rgba(239, 68, 68, .05) !important;
+        }
+
+        tr.out-of-stock td {
+            background: rgba(100, 116, 139, .07) !important;
+            opacity: .75;
+        }
+
+        /* ── Quick-stock inline editor ── */
+        .stock-cell {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+        }
+
+        .stock-cell .qty-mini {
+            width: 56px;
+            text-align: center;
+            padding: .25rem .4rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            background: var(--bg);
+            color: var(--text);
+            font-size: .8rem;
+            font-weight: 700;
+        }
+
+        .stock-cell .qty-mini:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .save-stock-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: .7rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stock-cell:focus-within .save-stock-btn {
+            display: flex;
+        }
+
+        /* ── Image preview in modal ── */
+        .img-preview {
+            width: 100%;
+            height: 140px;
+            border-radius: var(--r-md);
+            border: 2px dashed var(--border);
+            object-fit: cover;
+            display: none;
+            margin-bottom: .75rem;
+            background: var(--bg-subtle);
+        }
+
+        .img-preview.visible {
+            display: block;
+        }
+
+        /* ── Toggle switch ── */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border);
+            border-radius: 99px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .slider:before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: .3s;
+        }
+
+        .toggle input:checked+.slider {
+            background: var(--primary);
+        }
+
+        .toggle input:checked+.slider:before {
+            transform: translateX(18px);
+        }
+
+        /* ── Action buttons row ── */
+        .action-btns {
+            display: flex;
+            gap: .3rem;
+            flex-wrap: nowrap;
+        }
+
+        /* ── Modal wide ── */
+        .modal {
+            max-width: 600px !important;
+        }
+
+        /* ── Stats banner ── */
+        .prod-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .prod-stat-card {
+            flex: 1;
+            min-width: 110px;
+            padding: .9rem 1.1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            text-align: center;
+        }
+
+        .prod-stat-card .num {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .prod-stat-card .lbl {
+            font-size: .7rem;
+            color: var(--text-muted);
+            margin-top: .2rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="a-sidebar-overlay" id="a-overlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="a-sidebar" id="a-sidebar">
+        <div class="a-sidebar-logo">
+            <div class="a-sidebar-logo-icon"><i class="fas fa-shopping-basket"></i></div>
+            <div class="a-sidebar-logo-text">Smart<span>KART</span></div>
+        </div>
+        <nav class="a-sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="index.html" class="a-nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="analytics.html" class="a-nav-item"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <div class="nav-section">Catalogue</div>
+            <a href="products.html" class="a-nav-item active"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.html" class="a-nav-item"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <div class="nav-section">People</div>
+            <a href="users.html" class="a-nav-item"><i class="fas fa-users"></i> Customers</a>
+            <a href="coupons.html" class="a-nav-item"><i class="fas fa-tag"></i> Coupons</a>
+            <div class="nav-section">System</div>
+            <a href="../index.html" class="a-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+            <a href="#" class="a-nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="a-sidebar-footer">
+            <div class="a-sidebar-user">
+                <div class="a-sidebar-avatar" id="a-sb-avatar">A</div>
+                <div>
+                    <div class="a-sidebar-user-name" id="a-sb-name">Admin</div>
+                    <div class="a-sidebar-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- TOPBAR -->
+    <header class="a-topbar">
+        <button class="a-icon-btn a-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="a-topbar-search">
+            <i class="fas fa-search"></i>
+            <input id="prod-search" placeholder="Search products…" oninput="filterProducts()" />
+        </div>
+        <div class="a-topbar-right">
+            <div class="a-topbar-datetime">
+                <div class="a-topbar-date" id="a-tb-date"></div>
+                <div class="a-topbar-time" id="a-tb-time"></div>
+            </div>
+            <button class="a-icon-btn" id="a-theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="a-topbar-user">
+                <div class="a-topbar-user-av" id="a-tb-avatar">A</div>
+                <span class="a-topbar-user-name" id="a-tb-name">Admin</span>
+                <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted)"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="a-main">
+        <div class="a-content">
+            <div class="a-page-header">
+                <div>
+                    <div class="a-page-title"><i class="fas fa-box"></i> Products</div>
+                    <div class="a-page-sub">Manage your product catalogue</div>
+                </div>
+                <div class="a-page-actions">
+                    <button class="a-btn a-btn-primary" onclick="openModal()" id="btn-add-product">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Banner -->
+            <div class="prod-stats" id="prod-stats">
+                <div class="a-stat" style="--sc:#64748b">
+                    <div class="a-stat-icon"><i class="fas fa-box"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-total">—</div>
+                        <div class="a-stat-lbl">Total</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#22c55e">
+                    <div class="a-stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-available">—</div>
+                        <div class="a-stat-lbl">Available</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#ef4444">
+                    <div class="a-stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-lowstock">—</div>
+                        <div class="a-stat-lbl">Low Stock</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#94a3b8">
+                    <div class="a-stat-icon"><i class="fas fa-ban"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-unavail">—</div>
+                        <div class="a-stat-lbl">Unavailable</div>
+                    </div>
+                </div>
+                <div class="a-stat" style="--sc:#f59e0b">
+                    <div class="a-stat-icon"><i class="fas fa-star"></i></div>
+                    <div>
+                        <div class="a-stat-val" id="st-featured">—</div>
+                        <div class="a-stat-lbl">Featured</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs + Search -->
+            <div class="a-tabs" id="filter-tabs">
+                <button class="a-tab active" data-filter="all" onclick="setTab(this,'all')">All<span class="a-tab-count"
+                        id="tc-all">0</span></button>
+                <button class="a-tab" data-filter="available" onclick="setTab(this,'available')"><i
+                        class="fas fa-check-circle"></i> Available<span class="a-tab-count"
+                        id="tc-available">0</span></button>
+                <button class="a-tab" data-filter="low" onclick="setTab(this,'low')"><i
+                        class="fas fa-exclamation-triangle"></i> Low Stock<span class="a-tab-count"
+                        id="tc-low">0</span></button>
+                <button class="a-tab" data-filter="unavailable" onclick="setTab(this,'unavailable')"><i
+                        class="fas fa-ban"></i> Unavailable<span class="a-tab-count"
+                        id="tc-unavailable">0</span></button>
+                <button class="a-tab" data-filter="featured" onclick="setTab(this,'featured')"><i
+                        class="fas fa-star"></i> Featured<span class="a-tab-count" id="tc-featured">0</span></button>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+                <div class="a-select" style="padding:0"><select class="a-select" id="cat-filter"
+                        onchange="applyFilters()">
+                        <option value="">All Categories</option>
+                    </select></div>
+                <select class="a-select" id="sort-filter" onchange="applyFilters()">
+                    <option value="-created_date">Newest First</option>
+                    <option value="product_price">Price: Low → High</option>
+                    <option value="-product_price">Price: High → Low</option>
+                    <option value="product_quantity">Stock: Low → High</option>
+                    <option value="-product_quantity">Stock: High → Low</option>
+                    <option value="product_name">Name A–Z</option>
+                </select>
+            </div>
+
+            <!-- Table -->
+            <div class="a-table-wrap">
+                <table class="a-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody">
+                        <tr>
+                            <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">
+                                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="table-footer" style="margin-top:.75rem;font-size:.8rem;color:var(--text-muted)"></div>
+        </div>
+    </main>
+    </div>
+
+    <!-- ═══════════════════════════ ADD / EDIT MODAL ═══════════════════════════ -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Add Product</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id" />
+
+                <!-- Image preview -->
+                <img id="img-preview" class="img-preview" src="" alt="Preview" />
+
+                <!-- Row 1: Name + Category -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label class="form-label">Name *</label>
+                        <input class="form-control" id="f-name" placeholder="Product name" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" id="f-cat">
+                            <option value="">No category</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Price + Discount -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label class="form-label">Price (₹) *</label>
+                        <input class="form-control" type="number" id="f-price" step="0.01" placeholder="0.00" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sale Price (₹)</label>
+                        <input class="form-control" type="number" id="f-disc" step="0.01" placeholder="optional" />
+                    </div>
+                </div>
+
+                <!-- Row 3: Stock + Unit -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label class="form-label">Stock Qty</label>
+                        <input class="form-control" type="number" id="f-stock" value="0" min="0" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unit</label>
+                        <input class="form-control" id="f-unit" placeholder="kg, lb, piece, pack…" />
+                    </div>
+                </div>
+
+                <!-- Image URL -->
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input class="form-control" id="f-img" placeholder="https://..." oninput="previewImg(this.value)" />
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="f-desc" rows="2"
+                        placeholder="Short product description…"></textarea>
+                </div>
+
+                <!-- Tags -->
+                <div class="form-group">
+                    <label class="form-label">Tags <span
+                            style="color:var(--text-muted);font-weight:400">(comma-separated)</span></label>
+                    <input class="form-control" id="f-tags" placeholder="organic, fresh, vegan…" />
+                </div>
+
+                <!-- Row 4: Status + Featured + Expiry -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="f-status">
+                            <option value="available">✅ Available</option>
+                            <option value="unavailable">🚫 Unavailable</option>
+                            <option value="discontinued">⛔ Discontinued</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expiry Date</label>
+                        <input class="form-control" type="date" id="f-expiry" />
+                    </div>
+                    <div class="form-group" style="display:flex;align-items:center;gap:.6rem;margin-top:1.75rem">
+                        <label class="toggle">
+                            <input type="checkbox" id="f-feat" />
+                            <span class="slider"></span>
+                        </label>
+                        <label for="f-feat" style="font-size:.875rem;font-weight:600;cursor:pointer">
+                            <i class="fas fa-star" style="color:#F59E0B"></i> Featured
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" id="save-btn" onclick="saveProduct()">
+                    <i class="fas fa-save"></i> Save Product
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════ QUICK STOCK MODAL ═══════════════════ -->
+    <div class="modal-overlay" id="stock-modal">
+        <div class="modal" style="max-width:360px">
+            <div class="modal-header">
+                <h3>Update Stock</h3>
+                <button class="modal-close" onclick="closeStockModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-weight:600;margin-bottom:1rem" id="stock-prod-name"></div>
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <button class="btn btn-ghost btn-sm" onclick="adjustStock(-10)">-10</button>
+                    <button class="btn btn-ghost btn-sm" onclick="adjustStock(-1)">-1</button>
+                    <input class="form-control" type="number" id="stock-qty-input"
+                        style="text-align:center;font-size:1.25rem;font-weight:700" min="0" />
+                    <button class="btn btn-ghost btn-sm" onclick="adjustStock(1)">+1</button>
+                    <button class="btn btn-ghost btn-sm" onclick="adjustStock(10)">+10</button>
+                </div>
+                <div style="display:flex;gap:.5rem;margin-top:1rem">
+                    <button class="btn btn-danger btn-sm" onclick="setStockZero()"><i class="fas fa-times-circle"></i>
+                        Set 0 (Out of Stock)</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeStockModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveStock()"><i class="fas fa-save"></i> Save Stock</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../api-service.js"></script>
+    <script>
+        let allProducts = [], allCats = [], activeTab = 'all', stockTargetId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!Auth.isAdmin()) { window.location.href = '../login.html'; return; }
+            await loadCats();
+            await loadProducts();
+        });
+
+        // ─── Load ───────────────────────────────────────────────────
+        async function loadCats() {
+            const r = await adminAPI.categories().catch(() => ({ data: [] }));
+            allCats = r.data || [];
+            const opts = allCats.map(c => `<option value="${c.id}">${c.category_name}</option>`).join('');
+            document.getElementById('cat-filter').innerHTML =
+                '<option value="">All Categories</option>' +
+                allCats.map(c => `<option value="${c.category_name}">${c.category_name}</option>`).join('');
+            document.getElementById('f-cat').innerHTML = '<option value="">No category</option>' + opts;
+        }
+
+        async function loadProducts() {
+            document.getElementById('products-tbody').innerHTML =
+                `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i></td></tr>`;
+            const r = await adminAPI.products().catch(() => ({ data: [] }));
+            allProducts = r.data || [];
+            updateStats();
+            updateTabCounts();
+            applyFilters();
+        }
+
+        // ─── Stats ──────────────────────────────────────────────────
+        function updateStats() {
+            const avail = allProducts.filter(p => p.product_status === 'available').length;
+            const low = allProducts.filter(p => p.product_quantity <= 10 && p.product_status === 'available').length;
+            const unavail = allProducts.filter(p => p.product_status !== 'available').length;
+            const feat = allProducts.filter(p => p.is_featured).length;
+            document.getElementById('st-total').textContent = allProducts.length;
+            document.getElementById('st-available').textContent = avail;
+            document.getElementById('st-lowstock').textContent = low;
+            document.getElementById('st-unavail').textContent = unavail;
+            document.getElementById('st-featured').textContent = feat;
+        }
+
+        function updateTabCounts() {
+            document.getElementById('tc-all').textContent = allProducts.length;
+            document.getElementById('tc-available').textContent = allProducts.filter(p => p.product_status === 'available').length;
+            document.getElementById('tc-low').textContent = allProducts.filter(p => p.product_quantity <= 10 && p.product_status === 'available').length;
+            document.getElementById('tc-unavailable').textContent = allProducts.filter(p => p.product_status !== 'available').length;
+            document.getElementById('tc-featured').textContent = allProducts.filter(p => p.is_featured).length;
+        }
+
+        // ─── Filtering ──────────────────────────────────────────────
+        function setTab(btn, tab) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            activeTab = tab;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('prod-search').value.toLowerCase();
+            const cat = document.getElementById('cat-filter').value;
+            const sort = document.getElementById('sort-filter').value;
+
+            let prods = allProducts.filter(p => {
+                const matchQ = !q || p.product_name.toLowerCase().includes(q) ||
+                    (p.tags || '').toLowerCase().includes(q) ||
+                    (p.category_name || '').toLowerCase().includes(q);
+                const matchCat = !cat || p.category_name === cat;
+                const matchTab = activeTab === 'all' ? true
+                    : activeTab === 'available' ? p.product_status === 'available'
+                        : activeTab === 'unavailable' ? p.product_status !== 'available'
+                            : activeTab === 'low' ? (p.product_quantity <= 10 && p.product_status === 'available')
+                                : activeTab === 'featured' ? p.is_featured
+                                    : true;
+                return matchQ && matchCat && matchTab;
+            });
+
+            // Sort
+            prods = [...prods].sort((a, b) => {
+                if (sort === 'product_name') return a.product_name.localeCompare(b.product_name);
+                if (sort === 'product_price') return parseFloat(a.product_price) - parseFloat(b.product_price);
+                if (sort === '-product_price') return parseFloat(b.product_price) - parseFloat(a.product_price);
+                if (sort === 'product_quantity') return a.product_quantity - b.product_quantity;
+                if (sort === '-product_quantity') return b.product_quantity - a.product_quantity;
+                return new Date(b.created_date) - new Date(a.created_date);
+            });
+
+            renderTable(prods);
+            document.getElementById('table-footer').textContent = `Showing ${prods.length} of ${allProducts.length} products`;
+        }
+
+        // ─── Render ─────────────────────────────────────────────────
+        function renderTable(prods) {
+            if (!prods.length) {
+                document.getElementById('products-tbody').innerHTML =
+                    `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">
+                <i class="fas fa-box-open" style="font-size:2rem;display:block;margin-bottom:.75rem"></i>
+                No products match your filters.
+            </td></tr>`;
+                return;
+            }
+
+            document.getElementById('products-tbody').innerHTML = prods.map(p => {
+                const isLow = p.product_quantity <= 10 && p.product_quantity > 0 && p.product_status === 'available';
+                const isOut = p.product_quantity === 0 || p.product_status !== 'available';
+                const rowCls = isOut ? 'out-of-stock' : isLow ? 'low-stock' : '';
+
+                const stockBadge = p.product_quantity === 0
+                    ? `<span class="badge badge-red"><i class="fas fa-times-circle"></i> Out of Stock</span>`
+                    : p.product_quantity <= 10
+                        ? `<span class="badge badge-orange"><i class="fas fa-exclamation-triangle"></i> ${p.product_quantity}</span>`
+                        : `<span class="badge badge-green">${p.product_quantity}</span>`;
+
+                const statusBadge = p.product_status === 'available'
+                    ? `<span class="badge badge-green">Available</span>`
+                    : p.product_status === 'discontinued'
+                        ? `<span class="badge badge-red">Discontinued</span>`
+                        : `<span class="badge badge-gray">Unavailable</span>`;
+
+                const featBadge = p.is_featured ? `<span class="badge badge-orange" style="font-size:.65rem"><i class="fas fa-star"></i></span>` : '';
+
+                return `<tr class="${rowCls}">
+  <td>
+    <div style="position:relative;width:52px">
+      <img src="${p.product_image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&q=80'}"
+           alt="${p.product_name}"
+           style="width:52px;height:52px;object-fit:cover;border-radius:var(--r-md);background:var(--bg-subtle)"
+           onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&q=80'" />
+      ${p.product_quantity === 0 ? '<div style="position:absolute;inset:0;background:rgba(0,0,0,.45);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-size:.55rem;font-weight:800;text-align:center">OUT OF<br>STOCK</span></div>' : ''}
+    </div>
+  </td>
+  <td>
+    <div style="font-weight:700;font-size:.9rem">${p.product_name} ${featBadge}</div>
+    <div style="font-size:.72rem;color:var(--text-muted);margin-top:.2rem">${p.tags || '—'}</div>
+    ${p.unit ? `<div style="font-size:.7rem;color:var(--text-muted)">Unit: ${p.unit}</div>` : ''}
+  </td>
+  <td style="font-size:.85rem">${p.category_name || '—'}</td>
+  <td>
+    <div style="font-weight:700">₹${parseFloat(p.product_price).toFixed(2)}</div>
+    ${p.discount_price
+                        ? `<div style="font-size:.75rem;color:var(--primary);font-weight:600">
+            Sale: ₹${parseFloat(p.discount_price).toFixed(2)}
+            <span style="color:var(--text-muted);font-weight:400">(${Math.round((p.product_price - p.discount_price) / p.product_price * 100)}% off)</span>
+           </div>`
+                        : ''}
+  </td>
+  <td>
+    <div class="stock-cell">
+      ${stockBadge}
+      <button class="btn btn-ghost btn-sm" title="Edit Stock" onclick="openStockModal(${p.id},'${p.product_name.replace(/'/g, "\\'")}',${p.product_quantity})" style="padding:.2rem .45rem">
+        <i class="fas fa-pencil-alt" style="font-size:.7rem"></i>
+      </button>
+    </div>
+  </td>
+  <td>
+    ${statusBadge}
+    ${p.product_quantity === 0 && p.product_status === 'available'
+                        ? `<div style="font-size:.7rem;color:#EF4444;margin-top:.25rem"><i class="fas fa-exclamation-circle"></i> Restock needed</div>`
+                        : ''}
+  </td>
+  <td>
+    <div class="action-btns">
+      <button class="btn btn-ghost btn-sm" onclick="editProduct(${p.id})" title="Edit Product">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn ${p.product_status === 'available' ? 'btn-ghost' : 'btn-primary'} btn-sm"
+              onclick="toggleStatus(${p.id},'${p.product_status}')"
+              title="${p.product_status === 'available' ? 'Mark Unavailable' : 'Mark Available'}"
+              style="padding:.3rem .55rem">
+        <i class="fas ${p.product_status === 'available' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicateProduct(${p.id})" title="Duplicate">
+        <i class="fas fa-copy"></i>
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id},'${p.product_name.replace(/'/g, "\\'")}')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </td>
+</tr>`;
+            }).join('');
+        }
+
+        // ─── Add / Edit Modal ────────────────────────────────────────
+        function openModal(p = null) {
+            document.getElementById('modal-title').textContent = p ? 'Edit Product' : 'Add Product';
+            document.getElementById('save-btn').innerHTML = p
+                ? '<i class="fas fa-save"></i> Update Product'
+                : '<i class="fas fa-plus"></i> Save Product';
+            document.getElementById('edit-id').value = p?.id || '';
+            document.getElementById('f-name').value = p?.product_name || '';
+            document.getElementById('f-price').value = p?.product_price || '';
+            document.getElementById('f-disc').value = p?.discount_price || '';
+            document.getElementById('f-stock').value = p?.product_quantity ?? 0;
+            document.getElementById('f-unit').value = p?.unit || '';
+            document.getElementById('f-img').value = p?.product_image || '';
+            document.getElementById('f-desc').value = p?.product_description || '';
+            document.getElementById('f-tags').value = p?.tags || '';
+            document.getElementById('f-status').value = p?.product_status || 'available';
+            document.getElementById('f-expiry').value = p?.expiry_date || '';
+            document.getElementById('f-feat').checked = p?.is_featured || false;
+            // Set category — find by id
+            const catSel = document.getElementById('f-cat');
+            catSel.value = p?.category || '';
+            previewImg(p?.product_image || '');
+            document.getElementById('product-modal').classList.add('open');
+            setTimeout(() => document.getElementById('f-name').focus(), 100);
+        }
+
+        function closeModal() { document.getElementById('product-modal').classList.remove('open'); }
+
+        function previewImg(url) {
+            const img = document.getElementById('img-preview');
+            if (url && url.startsWith('http')) {
+                img.src = url;
+                img.classList.add('visible');
+                img.onerror = () => img.classList.remove('visible');
+            } else {
+                img.classList.remove('visible');
+            }
+        }
+
+        function editProduct(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (p) openModal(p);
+        }
+
+        async function saveProduct() {
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('f-name').value.trim();
+            const price = document.getElementById('f-price').value;
+            if (!name) { showToast('Product name is required', 'warning'); document.getElementById('f-name').focus(); return; }
+            if (!price) { showToast('Price is required', 'warning'); document.getElementById('f-price').focus(); return; }
+
+            const data = {
+                product_name: name,
+                category: document.getElementById('f-cat').value || null,
+                product_price: price,
+                discount_price: document.getElementById('f-disc').value || null,
+                product_quantity: parseInt(document.getElementById('f-stock').value) || 0,
+                unit: document.getElementById('f-unit').value,
+                product_image: document.getElementById('f-img').value,
+                product_description: document.getElementById('f-desc').value,
+                tags: document.getElementById('f-tags').value,
+                product_status: document.getElementById('f-status').value,
+                expiry_date: document.getElementById('f-expiry').value || null,
+                is_featured: document.getElementById('f-feat').checked,
+            };
+
+            const btn = document.getElementById('save-btn');
+            btn.classList.add('loading'); btn.disabled = true;
+            try {
+                if (id) await adminAPI.updateProduct(id, data);
+                else await adminAPI.createProduct(data);
+                showToast(id ? `"${name}" updated!` : `"${name}" created!`, 'success');
+                closeModal();
+                await loadProducts();
+            } catch (e) {
+                showToast(e.message, 'error');
+            } finally {
+                btn.classList.remove('loading'); btn.disabled = false;
+            }
+        }
+
+        // ─── Quick Stock Modal ───────────────────────────────────────
+        function openStockModal(id, name, qty) {
+            stockTargetId = id;
+            document.getElementById('stock-prod-name').textContent = name;
+            document.getElementById('stock-qty-input').value = qty;
+            document.getElementById('stock-modal').classList.add('open');
+            setTimeout(() => document.getElementById('stock-qty-input').select(), 100);
+        }
+        function closeStockModal() { document.getElementById('stock-modal').classList.remove('open'); stockTargetId = null; }
+        function adjustStock(delta) {
+            const inp = document.getElementById('stock-qty-input');
+            inp.value = Math.max(0, parseInt(inp.value || 0) + delta);
+        }
+        function setStockZero() { document.getElementById('stock-qty-input').value = 0; }
+
+        async function saveStock() {
+            const qty = parseInt(document.getElementById('stock-qty-input').value) || 0;
+            const prod = allProducts.find(p => p.id === stockTargetId);
+            if (!prod) return;
+            // Auto-set status based on stock
+            const newStatus = qty === 0 ? 'unavailable' : prod.product_status === 'unavailable' ? 'available' : prod.product_status;
+            try {
+                await adminAPI.updateProduct(stockTargetId, { product_quantity: qty, product_status: newStatus });
+                showToast(`Stock updated to ${qty}${qty === 0 ? ' — marked Unavailable' : ''}`, 'success');
+                closeStockModal();
+                await loadProducts();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // ─── Toggle Available / Unavailable ─────────────────────────
+        async function toggleStatus(id, currentStatus) {
+            const newStatus = currentStatus === 'available' ? 'unavailable' : 'available';
+            const prod = allProducts.find(p => p.id === id);
+            const label = newStatus === 'available' ? 'Available' : 'Unavailable';
+            try {
+                await adminAPI.updateProduct(id, { product_status: newStatus });
+                showToast(`"${prod?.product_name}" → ${label}`, newStatus === 'available' ? 'success' : 'info');
+                await loadProducts();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // ─── Duplicate ───────────────────────────────────────────────
+        async function duplicateProduct(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            const data = {
+                product_name: 'Copy of ' + p.product_name,
+                category: p.category,
+                product_price: p.product_price,
+                discount_price: p.discount_price,
+                product_quantity: p.product_quantity,
+                unit: p.unit,
+                product_image: p.product_image,
+                product_description: p.product_description,
+                tags: p.tags,
+                product_status: 'unavailable', // start as hidden
+                is_featured: false,
+            };
+            try {
+                await adminAPI.createProduct(data);
+                showToast(`Duplicated! Edit "Copy of ${p.product_name}" to publish.`, 'info');
+                await loadProducts();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // ─── Delete ──────────────────────────────────────────────────
+        async function deleteProduct(id, name) {
+            if (!confirm(`Permanently delete "${name}"?\n\nThis cannot be undone.`)) return;
+            try {
+                await adminAPI.deleteProduct(id);
+                showToast(`"${name}" deleted`, 'info');
+                await loadProducts();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        // Close modal on overlay click
+        document.getElementById('product-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+        document.getElementById('stock-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeStockModal();
+        });
+        // Enter key in stock input saves
+        document.getElementById('stock-qty-input')?.addEventListener('keydown', e => {
+            if (e.key === 'Enter') saveStock();
+        });
+    </script>
+    </div>
+    </main>
+    <script src="../api-service.js"></script>
+    <script src="admin-shared.js"></script>
+</body>
+
+</html>

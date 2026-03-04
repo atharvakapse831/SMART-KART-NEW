@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics — Admin | Smart KART</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="admin-shared.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .analytics-grid.three-col {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        @media(max-width: 900px) {
+
+            .analytics-grid,
+            .analytics-grid.three-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .65rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: .875rem;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-bar-wrap {
+            width: 100px;
+            height: 6px;
+            background: var(--bg-subtle);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            background: var(--primary);
+            transition: width .6s ease;
+        }
+
+        .big-num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .revenue-summary {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .top-prod-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: .65rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .top-prod-row:last-child {
+            border-bottom: none;
+        }
+
+        .top-prod-img {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--r-sm);
+            object-fit: cover;
+            background: var(--bg-subtle);
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="a-sidebar-overlay" id="a-overlay"></div>
+    <aside class="a-sidebar" id="a-sidebar">
+        <div class="a-sidebar-logo">
+            <div class="a-sidebar-logo-icon"><i class="fas fa-shopping-basket"></i></div>
+            <div class="a-sidebar-logo-text">Smart<span>KART</span></div>
+        </div>
+        <nav class="a-sidebar-nav">
+            <div class="nav-section">Main</div>
+            <a href="index.html" class="a-nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="analytics.html" class="a-nav-item active"><i class="fas fa-chart-bar"></i> Analytics</a>
+            <div class="nav-section">Catalogue</div>
+            <a href="products.html" class="a-nav-item"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.html" class="a-nav-item"><i class="fas fa-shopping-bag"></i> Orders</a>
+            <div class="nav-section">People</div>
+            <a href="users.html" class="a-nav-item"><i class="fas fa-users"></i> Customers</a>
+            <a href="coupons.html" class="a-nav-item"><i class="fas fa-tag"></i> Coupons</a>
+            <div class="nav-section">System</div>
+            <a href="../index.html" class="a-nav-item" target="_blank"><i class="fas fa-store"></i> View Store</a>
+            <a href="#" class="a-nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="a-sidebar-footer">
+            <div class="a-sidebar-user">
+                <div class="a-sidebar-avatar" id="a-sb-avatar">A</div>
+                <div>
+                    <div class="a-sidebar-user-name" id="a-sb-name">Admin</div>
+                    <div class="a-sidebar-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <header class="a-topbar">
+        <button class="a-icon-btn a-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="a-topbar-search"><i class="fas fa-search"></i><input placeholder="Search…" /></div>
+        <div class="a-topbar-right">
+            <div class="a-topbar-datetime">
+                <div class="a-topbar-date" id="a-tb-date"></div>
+                <div class="a-topbar-time" id="a-tb-time"></div>
+            </div>
+            <button class="a-icon-btn" id="a-theme-toggle"><i class="fas fa-moon"></i></button>
+            <div class="a-topbar-user">
+                <div class="a-topbar-user-av" id="a-tb-avatar">A</div><span class="a-topbar-user-name"
+                    id="a-tb-name">Admin</span>
+            </div>
+        </div>
+    </header>
+    <main class="a-main">
+        <div class="a-content">
+            <div class="a-page-header">
+                <div>
+                    <div class="a-page-title"><i class="fas fa-chart-bar"></i> Analytics</div>
+                    <div class="a-page-sub">Store performance overview</div>
+                </div>
+                <a href="index.html" class="a-btn a-btn-ghost a-btn-sm"><i class="fas fa-tachometer-alt"></i>
+                    Dashboard</a>
+            </div>
+
+            <!-- Revenue KPIs -->
+            <div class="a-stats-row" id="kpi-grid" style="margin-bottom:20px">
+                <div class="a-skel" style="height:90px;border-radius:12px"></div>
+                <div class="a-skel" style="height:90px;border-radius:12px"></div>
+                <div class="a-skel" style="height:90px;border-radius:12px"></div>
+                <div class="a-skel" style="height:90px;border-radius:12px"></div>
+            </div>
+
+            <!-- Row 1: Order Status Chart + Revenue Summary -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-chart-pie"></i> Orders by Status</div>
+                    </div>
+                    <div class="a-card-body"><canvas id="status-chart" height="220"></canvas></div>
+                </div>
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-rupee-sign"></i> Revenue Breakdown</div>
+                    </div>
+                    <div class="a-card-body" id="revenue-breakdown"></div>
+                </div>
+            </div>
+
+            <!-- Row 2: Category Distribution + Top Products -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-th-large"></i> Products by Category</div>
+                    </div>
+                    <div class="a-card-body"><canvas id="category-chart" height="220"></canvas></div>
+                </div>
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-fire" style="color:#f59e0b"></i> Top Products</div>
+                    </div>
+                    <div class="a-card-body" id="top-products"></div>
+                </div>
+            </div>
+
+            <!-- Row 3: Stock Alerts + Coupon Stats + Summary -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px">
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-exclamation-triangle" style="color:#ef4444"></i>
+                            Stock Alerts</div>
+                    </div>
+                    <div class="a-card-body" id="stock-alerts"></div>
+                </div>
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-tag" style="color:#8b5cf6"></i> Coupon Usage</div>
+                    </div>
+                    <div class="a-card-body" id="coupon-stats"></div>
+                </div>
+                <div class="a-card">
+                    <div class="a-card-header">
+                        <div class="a-card-title"><i class="fas fa-rupee-sign"></i> Revenue Summary</div>
+                    </div>
+                    <div class="a-card-body" style="text-align:center;padding-top:8px">
+                        <div style="font-size:32px;font-weight:800;color:var(--primary)" id="total-rev-big">—</div>
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:16px">from Delivered orders
+                        </div>
+                        <div class="stat-row"><span style="color:var(--text-muted)">Avg Order Value</span><strong
+                                id="avg-order">—</strong></div>
+                        <div class="stat-row"><span style="color:var(--text-muted)">Delivery Rate</span><strong
+                                id="delivery-rate" style="color:var(--primary)">—</strong></div>
+                        <div class="stat-row"><span style="color:var(--text-muted)">Cancel Rate</span><strong
+                                id="cancel-rate" style="color:#ef4444">—</strong></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    <div id="a-toast-container"></div>
+    <script src="../api-service.js"></script>
+    <script src="admin-shared.js"></script>
+    <script>
+        const STATUS_COLORS = {
+            Delivered: '#22C55E', Processing: '#3B82F6',
+            Pending: '#F59E0B', Shipped: '#8B5CF6', Cancelled: '#EF4444'
+        };
+        const CAT_COLORS = ['#22C55E', '#3B82F6', '#F59E0B', '#8B5CF6', '#EF4444', '#14B8A6', '#F97316'];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!Auth.isAdmin()) { window.location.href = '../login.html?next=admin/analytics.html'; return; }
+            await loadAnalytics();
+        });
+
+        async function loadAnalytics() {
+            try {
+                const [dashRes, prodsRes, ordersRes, couponsRes, catsRes] = await Promise.all([
+                    adminAPI.dashboard(),
+                    adminAPI.products(),
+                    adminAPI.orders(),
+                    adminAPI.coupons(),
+                    adminAPI.categories(),
+                ]);
+
+                const d = dashRes.data;
+                const allOrders = ordersRes.data || [];
+                const allProds = prodsRes.data || [];
+                const allCoupons = couponsRes.data || [];
+                const allCats = catsRes.data || [];
+
+                // ── KPIs ──
+                const kpiDefs = [
+                    { label: 'Total Revenue', value: '₹' + parseFloat(d.total_revenue).toFixed(0), icon: 'fa-rupee-sign', color: '#22C55E', rgb: '34,197,94' },
+                    { label: 'Total Orders', value: d.total_orders, icon: 'fa-shopping-bag', color: '#3B82F6', rgb: '59,130,246' },
+                    { label: 'Customers', value: d.total_customers, icon: 'fa-users', color: '#8B5CF6', rgb: '139,92,246' },
+                    { label: 'Products', value: d.total_products, icon: 'fa-box', color: '#F59E0B', rgb: '245,158,11' },
+                ];
+                document.getElementById('kpi-grid').innerHTML = kpiDefs.map(k => `
+                    <div class="a-stat" style="--sc:${k.color}">
+                        <div class="a-stat-icon"><i class="fas ${k.icon}"></i></div>
+                        <div><div class="a-stat-val">${k.value}</div><div class="a-stat-lbl">${k.label}</div></div>
+                    </div>`).join('');
+
+                // ── Order Status Chart ──
+                const statusCount = {};
+                allOrders.forEach(o => { statusCount[o.order_status] = (statusCount[o.order_status] || 0) + 1; });
+                new Chart(document.getElementById('status-chart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(statusCount),
+                        datasets: [{ data: Object.values(statusCount), backgroundColor: Object.keys(statusCount).map(s => STATUS_COLORS[s] || '#94A3B8'), borderWidth: 0 }]
+                    },
+                    options: { plugins: { legend: { position: 'bottom' } }, cutout: '60%' }
+                });
+
+                // ── Revenue Breakdown ──
+                const revenueByStatus = {};
+                allOrders.forEach(o => {
+                    const s = o.order_status;
+                    revenueByStatus[s] = (revenueByStatus[s] || 0) + parseFloat(o.order_total_amount);
+                });
+                const totalAllRev = Object.values(revenueByStatus).reduce((a, b) => a + b, 0) || 1;
+                document.getElementById('revenue-breakdown').innerHTML = Object.entries(revenueByStatus)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([s, v]) => `
+                    <div class="stat-row">
+                        <span style="color:${STATUS_COLORS[s]};font-weight:600">${s}</span>
+                        <div style="display:flex;align-items:center;gap:.75rem">
+                            <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${(v / totalAllRev * 100).toFixed(0)}%;background:${STATUS_COLORS[s]}"></div></div>
+                            <strong>₹${v.toFixed(0)}</strong>
+                        </div>
+                    </div>`).join('') || '<p style="color:var(--text-muted);font-size:.875rem">No orders yet.</p>';
+
+                // ── Category Chart ──
+                const catProdCount = {};
+                allProds.forEach(p => {
+                    const cn = p.category_name || 'Uncategorized';
+                    catProdCount[cn] = (catProdCount[cn] || 0) + 1;
+                });
+                new Chart(document.getElementById('category-chart'), {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(catProdCount),
+                        datasets: [{ label: 'Products', data: Object.values(catProdCount), backgroundColor: CAT_COLORS, borderRadius: 6 }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    }
+                });
+
+                // ── Top Products ──
+                const prodOrderCount = {};
+                allOrders.forEach(o => {
+                    (o.order_items || []).forEach(i => {
+                        prodOrderCount[i.product_name] = (prodOrderCount[i.product_name] || 0) + i.quantity;
+                    });
+                });
+                const topProds = Object.entries(prodOrderCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
+                const maxQty = topProds[0]?.[1] || 1;
+                document.getElementById('top-products').innerHTML = topProds.length
+                    ? topProds.map(([name, qty]) => {
+                        const prod = allProds.find(p => p.product_name === name);
+                        return `<div class="top-prod-row">
+                            <img class="top-prod-img" src="${prod?.product_image || ''}" alt="${name}"/>
+                            <div style="flex:1;min-width:0">
+                                <div style="font-weight:600;font-size:.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
+                                <div class="stat-bar-wrap" style="width:100%;margin-top:.35rem"><div class="stat-bar-fill" style="width:${(qty / maxQty * 100).toFixed(0)}%"></div></div>
+                            </div>
+                            <strong style="font-size:.875rem;flex-shrink:0">${qty} sold</strong>
+                        </div>`;
+                    }).join('')
+                    : '<p style="color:var(--text-muted);font-size:.875rem">Place some orders to see top products.</p>';
+
+                // ── Stock Alerts ──
+                const lowStock = allProds.filter(p => p.product_quantity <= 10).sort((a, b) => a.product_quantity - b.product_quantity);
+                document.getElementById('stock-alerts').innerHTML = lowStock.length
+                    ? lowStock.slice(0, 6).map(p => `
+                    <div class="stat-row">
+                        <span style="font-size:.875rem">${p.product_name.substring(0, 22)}${p.product_name.length > 22 ? '…' : ''}</span>
+                        <span class="badge ${p.product_quantity === 0 ? 'badge-red' : 'badge-orange'}">${p.product_quantity} left</span>
+                    </div>`).join('')
+                    : '<div style="text-align:center;padding:1.5rem 0"><i class="fas fa-check-circle" style="color:var(--primary);font-size:2rem"></i><p style="margin-top:.75rem;color:var(--text-muted);font-size:.875rem">All products well-stocked!</p></div>';
+
+                // ── Coupon Usage ──
+                document.getElementById('coupon-stats').innerHTML = allCoupons.length
+                    ? allCoupons.slice(0, 6).map(c => `
+                    <div class="stat-row">
+                        <code style="background:var(--primary-light);color:var(--primary-darker);padding:.15rem .5rem;border-radius:4px;font-size:.8rem;font-weight:700">${c.code}</code>
+                        <div style="text-align:right;font-size:.8rem">
+                            <strong>${c.used_count}</strong>${c.usage_limit ? `/${c.usage_limit}` : ''} uses
+                            <span class="badge ${c.is_active ? 'badge-green' : 'badge-gray'}" style="margin-left:.5rem">${c.is_active ? 'Active' : 'Off'}</span>
+                        </div>
+                    </div>`).join('')
+                    : '<p style="color:var(--text-muted);font-size:.875rem">No coupons created yet.</p>';
+
+                // ── Summary Stats ──
+                document.getElementById('total-rev-big').textContent = '₹' + parseFloat(d.total_revenue).toFixed(0);
+                const avgOrder = allOrders.length ? (allOrders.reduce((s, o) => s + parseFloat(o.order_total_amount), 0) / allOrders.length) : 0;
+                document.getElementById('avg-order').textContent = '₹' + avgOrder.toFixed(0);
+                const delivRate = allOrders.length ? ((statusCount['Delivered'] || 0) / allOrders.length * 100).toFixed(0) : 0;
+                const cancelRate = allOrders.length ? ((statusCount['Cancelled'] || 0) / allOrders.length * 100).toFixed(0) : 0;
+                document.getElementById('delivery-rate').textContent = delivRate + '%';
+                document.getElementById('cancel-rate').textContent = cancelRate + '%';
+
+            } catch (e) { showToast('Failed to load analytics: ' + e.message, 'error'); }
+        }
+    </script>
+</body>
+
+</html>
