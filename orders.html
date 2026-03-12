@@ -91,6 +91,36 @@
             background: #FEE2E2;
             color: #DC2626;
         }
+
+        .order-timeline {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .order-timeline-track {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        @media (max-width: 480px) {
+            .order-items-list,
+            .order-header,
+            .order-footer,
+            .order-timeline {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .order-item-row {
+                align-items: flex-start;
+            }
+
+            .order-timeline-track {
+                overflow-x: auto;
+                padding-bottom: 0.25rem;
+            }
+        }
     </style>
 </head>
 
@@ -180,8 +210,8 @@
     </div>
     <!-- Timeline -->
     ${o.order_status !== 'Cancelled' ? `
-    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:0">
+    <div class="order-timeline">
+      <div class="order-timeline-track">
         ${TIMELINE.map((s, i) => `
           <div style="flex:1;text-align:center;position:relative">
             <div style="width:28px;height:28px;border-radius:50%;background:${i <= step ? 'var(--primary)' : 'var(--bg-subtle)'};border:2px solid ${i <= step ? 'var(--primary)' : 'var(--border)'};color:${i <= step ? '#fff' : 'var(--text-muted)'};display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:.75rem;font-weight:700;z-index:1;position:relative">${i < step ? '✓' : i + 1}</div>
@@ -194,7 +224,7 @@
       <div style="font-size:.8rem;color:var(--text-muted)">
         ${delivery.delivery_address ? `<i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> ${delivery.delivery_address.substring(0, 60)}${delivery.delivery_address.length > 60 ? '...' : ''}` : ''}
       </div>
-      <div style="display:flex;gap:.5rem">
+      <div class="actions-row" style="gap:.5rem">
         ${payment.payment_invoice ? `<span class="badge badge-gray">${payment.payment_invoice}</span>` : ''}
         <a href="products.html" class="btn btn-ghost btn-sm">Buy Again</a>
       </div>

@@ -161,9 +161,52 @@
             line-height: 1.6;
         }
 
+        .pd-facts {
+            display: grid;
+            gap: 0.75rem;
+        }
+
         @media(max-width:768px) {
             .pd-layout {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .pd-img {
+                max-height: 320px;
+                aspect-ratio: auto;
+            }
+
+            .qty-row {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .qty-row .btn {
+                flex: 1;
+                min-width: 140px;
+            }
+
+            .pd-rating {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media(max-width:480px) {
+            .pd-layout {
+                padding-top: calc(var(--nav-h) + 1rem);
+            }
+
+            .pd-price {
+                font-size: 1.5rem;
+            }
+
+            .pd-title {
+                font-size: 1.5rem;
+            }
+
+            .qty-row .btn {
+                min-width: 0;
             }
         }
     </style>
@@ -199,57 +242,68 @@
         <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
     </nav>
 
-    <div class="container">
-        <div class="pd-layout" id="product-detail">
-            <!-- skeleton -->
-            <div class="skeleton" style="aspect-ratio:1;border-radius:var(--r-xl)"></div>
-            <div style="padding-top:2rem">
-                <div class="skeleton" style="height:14px;width:30%;margin-bottom:1rem"></div>
-                <div class="skeleton" style="height:32px;margin-bottom:.5rem"></div>
-                <div class="skeleton" style="height:32px;width:80%;margin-bottom:1.5rem"></div>
-                <div class="skeleton" style="height:20px;width:50%;margin-bottom:1rem"></div>
-                <div class="skeleton" style="height:40px;margin-bottom:1rem"></div>
+    <main>
+        <div class="container">
+            <div class="pd-layout" id="product-detail">
+                <!-- skeleton -->
+                <div class="skeleton" style="aspect-ratio:1;border-radius:var(--r-xl)"></div>
+                <div style="padding-top:2rem">
+                    <div class="skeleton" style="height:14px;width:30%;margin-bottom:1rem"></div>
+                    <div class="skeleton" style="height:32px;margin-bottom:.5rem"></div>
+                    <div class="skeleton" style="height:32px;width:80%;margin-bottom:1.5rem"></div>
+                    <div class="skeleton" style="height:20px;width:50%;margin-bottom:1rem"></div>
+                    <div class="skeleton" style="height:40px;margin-bottom:1rem"></div>
+                </div>
             </div>
-        </div>
 
-        <!-- Reviews -->
-        <div class="reviews-section" id="reviews-section" style="display:none">
-            <div class="section-top" style="margin-bottom:1.5rem">
-                <h2 class="section-title" style="font-size:1.5rem">Customer Reviews</h2>
-                <button class="btn btn-outline btn-sm" id="write-review-btn" onclick="toggleReviewForm()">Write a
-                    Review</button>
-            </div>
-            <!-- Write Review Form (hidden by default) -->
-            <div id="review-form-box"
-                style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:2rem">
-                <h4 style="margin-bottom:1rem">Share Your Experience</h4>
-                <div class="form-group">
-                    <label class="form-label">Rating</label>
-                    <div id="star-picker" style="display:flex;gap:.25rem;font-size:1.5rem;color:#D1D5DB;cursor:pointer">
-                        <i class="far fa-star" data-r="1"></i><i class="far fa-star" data-r="2"></i><i
-                            class="far fa-star" data-r="3"></i><i class="far fa-star" data-r="4"></i><i
-                            class="far fa-star" data-r="5"></i>
+            <!-- Reviews -->
+            <div class="reviews-section" id="reviews-section" style="display:none">
+                <div class="section-top" style="margin-bottom:1.5rem">
+                    <h2 class="section-title" style="font-size:1.5rem">Customer Reviews</h2>
+                    <button class="btn btn-outline btn-sm" id="write-review-btn" onclick="toggleReviewForm()">Write a
+                        Review</button>
+                </div>
+                <!-- Write Review Form (hidden by default) -->
+                <div id="review-form-box"
+                    style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:2rem">
+                    <h4 style="margin-bottom:1rem">Share Your Experience</h4>
+                    <div class="form-group">
+                        <label class="form-label">Rating</label>
+                        <div id="star-picker"
+                            style="display:flex;gap:.25rem;font-size:1.5rem;color:#D1D5DB;cursor:pointer">
+                            <i class="far fa-star" data-r="1"></i><i class="far fa-star" data-r="2"></i><i
+                                class="far fa-star" data-r="3"></i><i class="far fa-star" data-r="4"></i><i
+                                class="far fa-star" data-r="5"></i>
+                        </div>
+                        <input type="hidden" id="review-rating" value="5" />
                     </div>
-                    <input type="hidden" id="review-rating" value="5" />
+                    <div class="form-group">
+                        <label class="form-label">Comment</label>
+                        <textarea class="form-control" id="review-comment" rows="3"
+                            placeholder="What did you think?"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Comment</label>
-                    <textarea class="form-control" id="review-comment" rows="3"
-                        placeholder="What did you think?"></textarea>
-                </div>
-                <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+                <div id="reviews-list"></div>
             </div>
-            <div id="reviews-list"></div>
-        </div>
 
-        <!-- Related Products -->
-        <div style="margin:4rem 0 2rem">
-            <div class="section-top" style="margin-bottom:1.5rem">
-                <h2 class="section-title" style="font-size:1.5rem">You Might Also Like</h2>
+            <!-- Related Products -->
+            <div style="margin:4rem 0 2rem">
+                <div class="section-top" style="margin-bottom:1.5rem">
+                    <h2 class="section-title" style="font-size:1.5rem">You Might Also Like</h2>
+                </div>
+                <div class="product-grid" id="related-grid"></div>
             </div>
-            <div class="product-grid" id="related-grid"
-                style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))"></div>
         </div>
+    </main>
+
+    <!-- Sticky Add-to-Cart bar (mobile only) -->
+    <div class="sticky-atc-bar" id="sticky-atc-bar">
+        <span class="sticky-name" id="sticky-prod-name">Loading...</span>
+        <span class="sticky-price" id="sticky-prod-price"></span>
+        <button class="btn btn-primary btn-sm" id="sticky-atc-btn" onclick="stickyAddToCart()">
+            <i class="fas fa-shopping-cart"></i> Add
+        </button>
     </div>
 
     <nav class="bottom-nav">
@@ -302,8 +356,10 @@
           ${p.discount_price ? `<span class="pd-oldprice">${formatPrice(p.product_price)}</span><span class="pd-badge-save">${savePct}% OFF</span>` : ''}
         </div>
         <p class="pd-desc">${p.product_description || 'Fresh and high quality product.'}</p>
-        <div style="font-size:.85rem;color:var(--text-muted)"><i class="fas fa-box" style="color:var(--primary)"></i> In Stock: <strong>${p.product_quantity} ${p.unit || 'units'}</strong></div>
-        ${p.expiry_date ? `<div style="font-size:.85rem;color:var(--text-muted)"><i class="fas fa-calendar-alt" style="color:var(--primary)"></i> Best Before: <strong>${formatDate(p.expiry_date)}</strong></div>` : ''}
+        <div class="pd-facts">
+          <div style="font-size:.85rem;color:var(--text-muted)"><i class="fas fa-box" style="color:var(--primary)"></i> In Stock: <strong>${p.product_quantity} ${p.unit || 'units'}</strong></div>
+          ${p.expiry_date ? `<div style="font-size:.85rem;color:var(--text-muted)"><i class="fas fa-calendar-alt" style="color:var(--primary)"></i> Best Before: <strong>${formatDate(p.expiry_date)}</strong></div>` : ''}
+        </div>
         <div class="qty-row">
           <div class="qty-selector">
             <button onclick="changeQty(-1)"><i class="fas fa-minus"></i></button>
@@ -313,7 +369,7 @@
           <button class="btn btn-primary" style="flex:1" onclick="addToCart(${p.id},'${p.product_name}')"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
           <button class="btn btn-ghost" onclick="toggleWL(${p.id},'${p.product_name}')" title="Wishlist"><i class="fas fa-heart"></i></button>
         </div>
-        <div style="display:flex;gap:1.5rem;font-size:.8rem;color:var(--text-muted);padding-top:.5rem">
+        <div class="inline-meta-list" style="padding-top:.5rem">
           ${p.tags ? p.tags.split(',').map(t => `<span><i class="fas fa-tag" style="color:var(--primary)"></i> ${t.trim()}</span>`).join('') : ''}
         </div>
       </div>`;
@@ -327,6 +383,24 @@
                     const related = (rr.data || []).filter(x => x.id != p.id).slice(0, 4);
                     document.getElementById('related-grid').innerHTML = related.map(productCard).join('') || '<p style="color:var(--text-muted)">No related products.</p>';
                 }).catch(() => { });
+
+                // Store product for sticky bar
+                window._currentProduct = p;
+                const effPrice = p.discount_price || p.product_price;
+                const sName = document.getElementById('sticky-prod-name');
+                const sPrice = document.getElementById('sticky-prod-price');
+                if (sName) sName.textContent = p.product_name;
+                if (sPrice) sPrice.textContent = formatPrice(effPrice);
+
+                // Scroll listener: show sticky bar when main CTA scrolls off screen
+                const qtyRow = document.querySelector('.qty-row');
+                const stickyBar = document.getElementById('sticky-atc-bar');
+                if (qtyRow && stickyBar && window.innerWidth <= 768) {
+                    window.addEventListener('scroll', () => {
+                        const rect = qtyRow.getBoundingClientRect();
+                        stickyBar.classList.toggle('visible', rect.bottom < 0);
+                    }, { passive: true });
+                }
             } catch (e) {
                 document.getElementById('product-detail').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-exclamation-circle"></i><h3>Product not found</h3><p>${e.message}</p></div>`;
             }
@@ -347,15 +421,37 @@
 
         async function addToCart(id, name) {
             if (!Auth.isLoggedIn()) { showToast('Please log in to add to cart', 'warning'); return; }
-            try { await cartAPI.add(id, qty); showToast(`${name} ×${qty} added to cart!`, 'success'); refreshCartCount(); }
-            catch (e) { showToast(e.message, 'error'); }
+            const btn = event?.target?.closest('button');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+            try {
+                await cartAPI.add(id, qty);
+                if (btn) { btn.innerHTML = '<i class="fas fa-check"></i>'; btn.classList.add('success'); setTimeout(() => { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i>'; btn.classList.remove('success'); }, 1500); }
+                showToast(`${name} ×${qty} added to cart!`, 'success');
+                refreshCartCount();
+            } catch (e) {
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus"></i>'; }
+                showToast(e.message, 'error');
+            }
+        }
+
+        function stickyAddToCart() {
+            const p = window._currentProduct;
+            if (p) addToCart(p.id, p.product_name);
         }
 
         function toggleWL(id, name) {
             const items = JSON.parse(localStorage.getItem('sk_wishlist') || '[]');
             const idx = items.indexOf(id);
-            if (idx >= 0) { items.splice(idx, 1); showToast(`${name} removed from wishlist`, 'info'); }
-            else { items.push(id); showToast(`${name} saved ❤️`, 'success'); }
+            const btn = document.querySelector(`[onclick="toggleWL(${id},'${name}')"]`);
+            if (idx >= 0) {
+                items.splice(idx, 1);
+                showToast(`${name} removed from wishlist`, 'info');
+                if (btn) { btn.classList.remove('product-wishlist-btn', 'active'); }
+            } else {
+                items.push(id);
+                showToast(`${name} saved ❤️`, 'success');
+                if (btn) { btn.classList.add('product-wishlist-btn', 'active', 'heart-pop'); btn.addEventListener('animationend', () => btn.classList.remove('heart-pop'), { once: true }); }
+            }
             localStorage.setItem('sk_wishlist', JSON.stringify(items));
         }
 

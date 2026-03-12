@@ -207,18 +207,28 @@ function logout() {
 async function refreshCartCount() {
     const badge = document.getElementById('cart-count');
     if (!badge) return;
+    const prevCount = parseInt(badge.textContent) || 0;
+
+    const setCount = (count) => {
+        badge.textContent = count;
+        badge.style.display = count ? '' : 'none';
+        // Animate badge if count went up
+        if (count > prevCount) {
+            badge.classList.remove('badge-bounce');
+            void badge.offsetWidth; // force reflow
+            badge.classList.add('badge-bounce');
+            badge.addEventListener('animationend', () => badge.classList.remove('badge-bounce'), { once: true });
+        }
+    };
+
     if (!Auth.isLoggedIn()) {
-        // localStorage fallback
         const local = JSON.parse(localStorage.getItem('sk_cart') || '[]');
-        badge.textContent = local.length;
-        badge.style.display = local.length ? '' : 'none';
+        setCount(local.length);
         return;
     }
     try {
         const r = await cartAPI.get();
-        const count = (r.data || []).length;
-        badge.textContent = count;
-        badge.style.display = count ? '' : 'none';
+        setCount((r.data || []).length);
     } catch { }
 }
 
@@ -268,6 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateNavAuth();
         refreshCartCount();
     });
+
+    // ── Global scroll-reveal (Master Skill: Behaviour & Interaction) ──
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
 });
 
 // Expose globally

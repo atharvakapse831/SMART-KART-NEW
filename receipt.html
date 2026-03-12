@@ -72,6 +72,7 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 3rem;
+            gap: 2rem;
         }
 
         .bill-to h3,
@@ -164,6 +165,64 @@
             gap: 1rem;
             z-index: 100;
             border: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0 6.5rem;
+            }
+
+            .receipt-container {
+                padding: 1.5rem;
+                border-radius: var(--radius-md);
+            }
+
+            .receipt-header,
+            .billing-info {
+                flex-direction: column;
+            }
+
+            .receipt-title {
+                text-align: left;
+            }
+
+            .receipt-title h1 {
+                font-size: 2rem;
+                letter-spacing: 1px;
+            }
+
+            .summary-section {
+                justify-content: stretch;
+            }
+
+            .summary-table {
+                width: 100%;
+            }
+
+            .action-bar {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+                transform: none;
+                border-radius: var(--radius-lg);
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .items-table th,
+            .items-table td {
+                padding: 0.75rem;
+            }
+
+            .action-bar {
+                flex-direction: column;
+            }
+
+            .action-bar .btn {
+                width: 100%;
+            }
         }
 
         /* Print Styles */
@@ -307,19 +366,21 @@
                     </div>
                 </div>
 
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 50%;">Item Description</th>
-                            <th style="width: 15%; text-align: center;">Qty</th>
-                            <th style="width: 15%; text-align: right;">Price</th>
-                            <th style="width: 20%; text-align: right;">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${itemsHtml}
-                    </tbody>
-                </table>
+                <div class="table-scroll">
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Item Description</th>
+                                <th style="width: 15%; text-align: center;">Qty</th>
+                                <th style="width: 15%; text-align: right;">Price</th>
+                                <th style="width: 20%; text-align: right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="summary-section">
                     <div class="summary-table">

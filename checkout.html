@@ -69,6 +69,12 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media(max-width:480px) {
+            .checkout-grid {
+                gap: 1.25rem;
+            }
+        }
     </style>
 </head>
 
@@ -172,7 +178,7 @@
                                 <div style="font-size:.8rem;color:var(--text-muted)">Pay from your balance</div>
                             </div>
                         </div>
-                        <div style="margin-top:1.5rem;display:flex;gap:1rem">
+                        <div class="actions-row" style="margin-top:1.5rem">
                             <button class="btn btn-ghost" onclick="goStep(1)"><i class="fas fa-arrow-left"></i>
                                 Back</button>
                             <button class="btn btn-primary" onclick="goStep(3)">Review Order <i
@@ -186,7 +192,7 @@
                         <div class="card card-body" id="confirm-details"
                             style="margin-bottom:1.5rem;font-size:.875rem;line-height:2"></div>
                         <div id="cart-review" style="margin-bottom:1.5rem"></div>
-                        <div style="display:flex;gap:1rem">
+                        <div class="actions-row">
                             <button class="btn btn-ghost" onclick="goStep(2)"><i class="fas fa-arrow-left"></i>
                                 Back</button>
                             <button class="btn btn-primary btn-lg" id="place-order-btn" onclick="placeOrder()"
@@ -203,7 +209,7 @@
                             <h2>Order Placed! 🎉</h2>
                             <p>Your order has been confirmed and will be delivered soon.</p>
                             <p style="margin-top:.5rem;font-weight:700" id="order-confirm-num"></p>
-                            <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center">
+                            <div class="actions-row actions-row-center" style="margin-top:2rem">
                                 <a href="orders.html" class="btn btn-primary">Track Order</a>
                                 <a href="products.html" class="btn btn-ghost">Continue Shopping</a>
                             </div>

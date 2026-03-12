@@ -52,6 +52,71 @@
             cursor: pointer;
             font-size: .75rem;
         }
+
+        /* Mobile filter */
+        .filter-toggle-btn {
+            display: none;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .filter-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 200;
+        }
+
+        .filter-overlay.open {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .filter-toggle-btn {
+                display: inline-flex;
+            }
+
+            .filters-sidebar {
+                position: fixed !important;
+                inset: 0 auto 0 0;
+                width: min(85vw, 300px);
+                z-index: 201;
+                transform: translateX(-110%);
+                transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+                overflow-y: auto;
+                border-radius: 0 var(--r-lg) var(--r-lg) 0;
+                padding-top: 1rem;
+            }
+
+            .filters-sidebar.open {
+                transform: translateX(0);
+            }
+
+            #filter-close-btn {
+                display: inline-flex !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero {
+                padding: 2.25rem 0;
+            }
+
+            .page-hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .catalog-toolbar {
+                gap: 0.75rem;
+            }
+
+            .catalog-toolbar .search-bar,
+            .catalog-toolbar .sort-select,
+            .catalog-toolbar .filter-toggle-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -90,91 +155,106 @@
         <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
     </nav>
 
-    <div class="page-hero">
-        <div class="container">
-            <h1>All Products</h1>
-            <p>Fresh from the farm to your table</p>
-        </div>
-    </div>
-
-    <div class="container" style="padding-top:2rem;padding-bottom:4rem">
-        <!-- Search + Sort bar -->
-        <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center">
-            <div class="search-bar" style="flex:1;min-width:250px">
-                <input type="text" id="search-input" placeholder="Search products..." autocomplete="off" />
-                <button><i class="fas fa-search"></i></button>
-            </div>
-            <select class="sort-select" id="sort-select">
-                <option value="-created_date">Newest First</option>
-                <option value="product_price">Price: Low → High</option>
-                <option value="-product_price">Price: High → Low</option>
-                <option value="-rating">Top Rated</option>
-                <option value="product_name">A → Z</option>
-            </select>
-        </div>
-
-        <div class="active-filters" id="active-filters"></div>
-
-        <div class="products-layout">
-            <!-- Sidebar -->
-            <aside class="filters-sidebar">
-                <div class="filter-group">
-                    <div class="filter-group-title">Category</div>
-                    <div id="cat-filters">
-                        <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
-                        <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
-                        <div class="skeleton" style="height:12px"></div>
-                    </div>
-                </div>
-                <div class="filter-group">
-                    <div class="filter-group-title">Price Range</div>
-                    <div class="price-range-inputs">
-                        <input type="number" class="form-control" id="min-price" placeholder="Min" min="0" />
-                        <input type="number" class="form-control" id="max-price" placeholder="Max" min="0" />
-                    </div>
-                    <button class="btn btn-outline btn-sm" style="margin-top:.75rem;width:100%"
-                        onclick="applyPriceFilter()">Apply</button>
-                </div>
-                <div class="filter-group">
-                    <div class="filter-group-title">Availability</div>
-                    <label class="filter-option"><input type="checkbox" id="feat-filter" onchange="loadProducts()" />
-                        Featured only</label>
-                </div>
-                <button class="btn btn-ghost btn-sm btn-block" onclick="clearFilters()">Clear All Filters</button>
-            </aside>
-
-            <!-- Products Area -->
-            <div>
-                <div class="results-bar">
-                    <span class="results-count" id="results-count">Loading...</span>
-                </div>
-                <div class="product-grid" id="product-grid">
-                    <div class="skeleton-card">
-                        <div class="skeleton-img"></div>
-                        <div class="skeleton-line"></div>
-                        <div class="skeleton-line short"></div>
-                    </div>
-                    <div class="skeleton-card">
-                        <div class="skeleton-img"></div>
-                        <div class="skeleton-line"></div>
-                        <div class="skeleton-line short"></div>
-                    </div>
-                    <div class="skeleton-card">
-                        <div class="skeleton-img"></div>
-                        <div class="skeleton-line"></div>
-                        <div class="skeleton-line short"></div>
-                    </div>
-                    <div class="skeleton-card">
-                        <div class="skeleton-img"></div>
-                        <div class="skeleton-line"></div>
-                        <div class="skeleton-line short"></div>
-                    </div>
-                </div>
-                <div class="pagination" id="pagination"></div>
+    <main>
+        <div class="page-hero">
+            <div class="container">
+                <h1>All Products</h1>
+                <p>Fresh from the farm to your table</p>
             </div>
         </div>
-    </div>
 
+        <div class="container" style="padding-top:2rem;padding-bottom:4rem">
+            <!-- Search + Sort bar -->
+            <div class="catalog-toolbar"
+                style="display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center">
+                <button class="btn btn-ghost filter-toggle-btn" id="filter-toggle-btn" onclick="toggleFilters()">
+                    <i class="fas fa-sliders-h"></i> Filters
+                </button>
+                <div class="search-bar" style="flex:1;min-width:200px">
+                    <input type="text" id="search-input" placeholder="Search products..." autocomplete="off" />
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <select class="sort-select" id="sort-select">
+                    <option value="-created_date">Newest First</option>
+                    <option value="product_price">Price: Low → High</option>
+                    <option value="-product_price">Price: High → Low</option>
+                    <option value="-rating">Top Rated</option>
+                    <option value="product_name">A → Z</option>
+                </select>
+            </div>
+
+            <!-- Filter overlay (mobile) -->
+            <div class="filter-overlay" id="filter-overlay" onclick="toggleFilters()"></div>
+
+            <div class="active-filters" id="active-filters"></div>
+
+            <div class="products-layout">
+                <!-- Sidebar -->
+                <aside class="filters-sidebar" id="filter-sidebar">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+                        <strong>Filters</strong>
+                        <button class="btn btn-ghost btn-sm filter-toggle-btn" onclick="toggleFilters()"
+                            style="display:none" id="filter-close-btn">✕ Close</button>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-group-title">Category</div>
+                        <div id="cat-filters">
+                            <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+                            <div class="skeleton" style="height:12px;margin-bottom:8px"></div>
+                            <div class="skeleton" style="height:12px"></div>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-group-title">Price Range</div>
+                        <div class="price-range-inputs">
+                            <input type="number" class="form-control" id="min-price" placeholder="Min" min="0" />
+                            <input type="number" class="form-control" id="max-price" placeholder="Max" min="0" />
+                        </div>
+                        <button class="btn btn-outline btn-sm" style="margin-top:.75rem;width:100%"
+                            onclick="applyPriceFilter()">Apply</button>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-group-title">Availability</div>
+                        <label class="filter-option"><input type="checkbox" id="feat-filter"
+                                onchange="loadProducts()" />
+                            Featured only</label>
+                    </div>
+                    <button class="btn btn-ghost btn-sm btn-block" onclick="clearFilters()">Clear All Filters</button>
+                </aside>
+
+                <!-- Products Area -->
+                <div>
+                    <div class="results-bar">
+                        <span class="results-count" id="results-count">Loading...</span>
+                    </div>
+                    <div class="product-grid" id="product-grid">
+                        <div class="skeleton-card">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-img"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                    </div>
+                    <div class="pagination" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
     <nav class="bottom-nav">
         <a href="index.html" class="bottom-nav-item"><i class="fas fa-home"></i>Home</a>
         <a href="products.html" class="bottom-nav-item active"><i class="fas fa-store"></i>Shop</a>
@@ -188,6 +268,12 @@
         let currentPage = 1, totalPages = 1;
         let searchTimeout;
         const urlP = new URLSearchParams(window.location.search);
+
+        function toggleFilters() {
+            document.getElementById('filter-sidebar').classList.toggle('open');
+            document.getElementById('filter-overlay').classList.toggle('open');
+            document.body.classList.toggle('nav-open');
+        }
 
         function getFilters() {
             return {
